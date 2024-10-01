@@ -49,7 +49,7 @@ jobs:
           tests/scripts/github-action-helper.sh create_partitions_for_osds
 
       - name: deploy cluster
-        run: tests/scripts/github-action-helper.sh deploy_cluster
+        run: tests/scripts/github-action-helper.sh deploy_cluster_full_of_cruft_please_stop_using_this
 
       - name: setup csi-addons
         run: tests/scripts/csiaddons.sh setup_csiaddons
@@ -363,7 +363,7 @@ jobs:
       - name: deploy cluster
         run: |
           export ALLOW_LOOP_DEVICES=true
-          tests/scripts/github-action-helper.sh deploy_cluster loop
+          tests/scripts/github-action-helper.sh deploy_cluster_full_of_cruft_please_stop_using_this loop
           tests/scripts/github-action-helper.sh create_operator_toolbox
 
       - name: wait for prepare pod
@@ -433,7 +433,7 @@ jobs:
           tests/scripts/create-bluestore-partitions.sh --disk "$BLOCK" --wipe-only
 
       - name: deploy cluster
-        run: tests/scripts/github-action-helper.sh deploy_cluster two_osds_in_device
+        run: tests/scripts/github-action-helper.sh deploy_cluster_full_of_cruft_please_stop_using_this two_osds_in_device
 
       - name: wait for prepare pod
         run: tests/scripts/github-action-helper.sh wait_for_prepare_pod 2
@@ -481,7 +481,7 @@ jobs:
 
       - name: deploy cluster
         run: |
-          tests/scripts/github-action-helper.sh deploy_cluster osd_with_metadata_partition_device
+          tests/scripts/github-action-helper.sh deploy_cluster_full_of_cruft_please_stop_using_this osd_with_metadata_partition_device
 
       - name: wait for prepare pod
         run: tests/scripts/github-action-helper.sh wait_for_prepare_pod 1
@@ -537,7 +537,7 @@ jobs:
           tests/scripts/github-action-helper.sh create_LV_on_disk $(sudo losetup --find --show test-rook.img)
 
       - name: deploy cluster
-        run: tests/scripts/github-action-helper.sh deploy_cluster osd_with_metadata_device
+        run: tests/scripts/github-action-helper.sh deploy_cluster_full_of_cruft_please_stop_using_this osd_with_metadata_device
 
       - name: wait for prepare pod
         run: tests/scripts/github-action-helper.sh wait_for_prepare_pod 1
@@ -587,7 +587,7 @@ jobs:
           tests/scripts/create-bluestore-partitions.sh --disk "$BLOCK" --wipe-only
 
       - name: deploy cluster
-        run: tests/scripts/github-action-helper.sh deploy_cluster encryption
+        run: tests/scripts/github-action-helper.sh deploy_cluster_full_of_cruft_please_stop_using_this encryption
 
       - name: wait for prepare pod
         run: tests/scripts/github-action-helper.sh wait_for_prepare_pod 1
@@ -642,7 +642,7 @@ jobs:
           tests/scripts/github-action-helper.sh create_LV_on_disk $BLOCK
 
       - name: deploy cluster
-        run: tests/scripts/github-action-helper.sh deploy_cluster lvm
+        run: tests/scripts/github-action-helper.sh deploy_cluster_full_of_cruft_please_stop_using_this lvm
 
       - name: wait for prepare pod
         run: tests/scripts/github-action-helper.sh wait_for_prepare_pod 1
