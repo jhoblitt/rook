@@ -95,6 +95,14 @@ func MaxSizeQuota(AdditionalConfig map[string]string) string {
 	return AdditionalConfig["maxSize"]
 }
 
+func BucketMaxObjectsQuota(AdditionalConfig map[string]string) string {
+	return AdditionalConfig["bucketMaxObjects"]
+}
+
+func BucketMaxSizeQuota(AdditionalConfig map[string]string) string {
+	return AdditionalConfig["bucketMaxSize"]
+}
+
 func GetObjectStoreNameFromBucket(ob *bktv1alpha1.ObjectBucket) (types.NamespacedName, error) {
 	// Rook v1.11 OBCs have additional state labels that tell the object store namespace and name.
 	// This is critical for CephObjectStores in external mode that connect to RGW endpoints directly

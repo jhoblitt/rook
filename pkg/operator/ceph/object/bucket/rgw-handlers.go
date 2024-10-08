@@ -6,13 +6,21 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (p *Provisioner) bucketExists(name string) (bool, string, error) {
+func (p *Provisioner) bucketInfo(name string) (admin.Bucket, error) {
 	bucket, err := p.adminOpsClient.GetBucketInfo(p.clusterInfo.Context, admin.Bucket{Bucket: name})
 	if err != nil {
 		if errors.Is(err, admin.ErrNoSuchBucket) {
-			return false, "", nil
+			return admin.Bucket{}, nil
 		}
-		return false, "", errors.Wrapf(err, "failed to get ceph bucket %q", name)
+		return admin.Bucket{}, errors.Wrapf(err, "failed to get ceph bucket %q", name)
+	}
+	return bucket, nil
+}
+
+func (p *Provisioner) bucketExists(name string) (bool, string, error) {
+	bucket, err := p.bucketInfo(name)
+	if err != nil {
+		return false, "", err
 	}
 	return true, bucket.Owner, nil
 }

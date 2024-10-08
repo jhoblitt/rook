@@ -570,8 +570,11 @@ func (p *Provisioner) populateDomainAndPort(sc *storagev1.StorageClass) error {
 func (p *Provisioner) setAdditionalSettings(options *apibkt.BucketOptions) error {
 	var maxObjectsInt64 int64 = -1
 	var maxSizeInt64 int64 = -1
+	var bucketMaxObjectsInt64 int64 = -1
+	var bucketMaxSizeInt64 int64 = -1
 	var err error
 	var quotaEnabled bool
+	var bucketQuotaEnabled bool
 
 	maxObjects := MaxObjectQuota(options.ObjectBucketClaim.Spec.AdditionalConfig)
 	if maxObjects != "" {
@@ -593,6 +596,26 @@ func (p *Provisioner) setAdditionalSettings(options *apibkt.BucketOptions) error
 		}
 	}
 
+	bucketMaxObjects := BucketMaxObjectsQuota(options.ObjectBucketClaim.Spec.AdditionalConfig)
+	if bucketMaxObjects != "" {
+		bucketQuotaEnabled = true
+
+		maxObjectsInt64, err = toInt64(bucketMaxObjects)
+		if err != nil {
+			return errors.Wrapf(err, "failed to parse bucketMaxObjects quota for user %q", p.cephUserName)
+		}
+	}
+
+	bucketMaxSize := BucketMaxSizeQuota(options.ObjectBucketClaim.Spec.AdditionalConfig)
+	if bucketMaxSize != "" {
+		bucketQuotaEnabled = true
+
+		bucketMaxSizeInt64, err = toInt64(bucketMaxSize)
+		if err != nil {
+			return errors.Wrapf(err, "failed to parse bucketMaxSize quota for user %q", p.cephUserName)
+		}
+	}
+
 	objectUser, err := p.adminOpsClient.GetUser(p.clusterInfo.Context, admin.User{ID: p.cephUserName})
 	if err != nil {
 		return errors.Wrapf(err, "failed to fetch user %q", p.cephUserName)
@@ -606,22 +629,39 @@ func (p *Provisioner) setAdditionalSettings(options *apibkt.BucketOptions) error
 		}
 	}
 
-	if !quotaEnabled {
-		// no need to process anything else if quotas are disabled
-		return nil
+	bucket, err := p.bucketInfo(p.bucketName)
+	if err != nil {
+		return errors.Wrapf(err, "failed to get bucket %q info", p.bucketName)
 	}
 
-	if *objectUser.UserQuota.MaxObjects != maxObjectsInt64 {
-		err = p.adminOpsClient.SetUserQuota(p.clusterInfo.Context, admin.QuotaSpec{UID: p.cephUserName, MaxObjects: &maxObjectsInt64})
+	if bucket.BucketQuota.Enabled != &bucketQuotaEnabled {
+		err = p.adminOpsClient.SetBucketQuota(p.clusterInfo.Context, admin.QuotaSpec{
+			UID:        p.cephUserName,
+			Bucket:     p.bucketName,
+			QuotaType:  "bucket",
+			Enabled:    &bucketQuotaEnabled,
+			MaxSize:    &bucketMaxSizeInt64,
+			MaxObjects: &bucketMaxObjectsInt64,
+		})
 		if err != nil {
-			return errors.Wrapf(err, "failed to set MaxObjects=%v to user %q", maxObjectsInt64, p.cephUserName)
+			return errors.Wrapf(err, "failed to set bucket %q quota enabled=%v for obc", p.bucketName, bucketQuotaEnabled)
 		}
+
 	}
 
-	if objectUser.UserQuota.MaxSize != &maxSizeInt64 {
-		err = p.adminOpsClient.SetUserQuota(p.clusterInfo.Context, admin.QuotaSpec{UID: p.cephUserName, MaxSize: &maxSizeInt64})
-		if err != nil {
-			return errors.Wrapf(err, "failed to set MaxSize=%v to user %q", maxSizeInt64, p.cephUserName)
+	if quotaEnabled {
+		if *objectUser.UserQuota.MaxObjects != maxObjectsInt64 {
+			err = p.adminOpsClient.SetUserQuota(p.clusterInfo.Context, admin.QuotaSpec{UID: p.cephUserName, MaxObjects: &maxObjectsInt64})
+			if err != nil {
+				return errors.Wrapf(err, "failed to set MaxObjects=%v to user %q", maxObjectsInt64, p.cephUserName)
+			}
+		}
+
+		if objectUser.UserQuota.MaxSize != &maxSizeInt64 {
+			err = p.adminOpsClient.SetUserQuota(p.clusterInfo.Context, admin.QuotaSpec{UID: p.cephUserName, MaxSize: &maxSizeInt64})
+			if err != nil {
+				return errors.Wrapf(err, "failed to set MaxSize=%v to user %q", maxSizeInt64, p.cephUserName)
+			}
 		}
 	}
 
