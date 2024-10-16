@@ -62,6 +62,7 @@ type additionalConfigSpec struct {
 	maxSize          *int64
 	bucketMaxObjects *int64
 	bucketMaxSize    *int64
+	bucketPolicy     *string
 }
 
 var _ apibkt.Provisioner = &Provisioner{}
