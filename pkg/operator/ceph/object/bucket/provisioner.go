@@ -22,6 +22,7 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws/awserr"
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/ceph/go-ceph/rgw/admin"
 	"github.com/coreos/pkg/capnslog"
 	"github.com/google/go-cmp/cmp"
@@ -202,6 +203,21 @@ func (p Provisioner) Grant(options *apibkt.BucketOptions) (*bktv1alpha1.ObjectBu
 			if aerr.Code() != "NoSuchBucketPolicy" {
 				return nil, err
 			}
+		}
+	}
+
+	// if p.additionalConfig.bucketPolicy != nil {
+
+	{
+		confirmRemoveSelfBucketAccess := false
+		_, err := s3svc.Client.PutBucketPolicy(&s3.PutBucketPolicyInput{
+			Bucket:                        &p.bucketName,
+			ConfirmRemoveSelfBucketAccess: &confirmRemoveSelfBucketAccess,
+			Policy:                        p.additionalConfig.bucketPolicy,
+		})
+		if err != nil {
+			logger.Errorf("failed to put bucket policy for bucket %q. %v", p.bucketName, err)
+			return nil, err
 		}
 	}
 
