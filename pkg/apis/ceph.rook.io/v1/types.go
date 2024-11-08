@@ -1971,6 +1971,8 @@ type ObjectStoreUserStatus struct {
 	// ObservedGeneration is the latest generation observed by the controller.
 	// +optional
 	ObservedGeneration int64 `json:"observedGeneration,omitempty"`
+	// InputCredentials reports the latest info about which input credentials Rook has applied, if any.
+	InputCredentials ObjectUserInputCredentialsStatus `json:"inputCredentials,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -1996,6 +1998,10 @@ type ObjectStoreUserSpec struct {
 	// +optional
 	// +nullable
 	Quotas *ObjectUserQuotaSpec `json:"quotas,omitempty"`
+	// InputCredentials allows specifying custom credentials to apply to the object user, rather
+	// than generating random credentials.
+	// +optional
+	InputCredentials ObjectUserInputCredentialsSpec `json:"inputCredentials,omitempty"`
 	// The namespace where the parent CephCluster and CephObjectStore are found
 	// +optional
 	ClusterNamespace string `json:"clusterNamespace,omitempty"`
@@ -2084,6 +2090,23 @@ type ObjectUserQuotaSpec struct {
 	// +optional
 	// +nullable
 	MaxObjects *int64 `json:"maxObjects,omitempty"`
+}
+
+// ObjectUserInputCredentialsSpec allows specifying where Rook can find user credentials to apply,
+// rather than generating random credentials.
+type ObjectUserInputCredentialsSpec struct {
+	// The name of the secret that contains credentials to apply to the Rook-generated object user.
+	// Supported secret data keys are `AccessKey` (key ID) and `SecretKey`.
+	SecretName string `json:"secretName"`
+}
+
+// ObjectUserInputCredentialsStatus reports the latest info about which input credentials Rook has applied.
+type ObjectUserInputCredentialsStatus struct {
+	// The name of the input credential secret which Rook successfully applied to the object user.
+	SecretName string `json:"secretName"`
+	// The resource generation of the input credential secret which Rook successfully applied to the
+	// object user.
+	SecretGeneration string `json:"secretGeneration"`
 }
 
 // +genclient

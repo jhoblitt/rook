@@ -220,10 +220,6 @@ func (r *ReconcileObjectStoreUser) reconcile(request reconcile.Request) (reconci
 		return opcontroller.WaitForRequeueIfCephClusterNotReady, *cephObjectStoreUser, err
 	}
 
-	// Generate user config
-	userConfig := generateUserConfig(cephObjectStoreUser)
-	r.userConfig = &userConfig
-
 	// DELETE: the CR was deleted
 	if !cephObjectStoreUser.GetDeletionTimestamp().IsZero() {
 		logger.Debugf("deleting object store user %q", request.NamespacedName)
@@ -252,12 +248,31 @@ func (r *ReconcileObjectStoreUser) reconcile(request reconcile.Request) (reconci
 		return reconcile.Result{}, *cephObjectStoreUser, errors.Wrapf(err, "invalid pool CR %q spec", cephObjectStoreUser.Name)
 	}
 
+	// GET USER-SPECIFIED INPUT CREDENTIALS
+	var inputSecret *corev1.Secret = nil // nil indicates user did not specify this
+	if cephObjectStoreUser.Spec.InputCredentials.SecretName != "" {
+		if err := r.client.Get(r.clusterInfo.Context, request.NamespacedName, inputSecret); err != nil {
+			return reconcile.Result{}, *cephObjectStoreUser, errors.Wrapf(err, "failed to get input secret %q", inputSecret)
+		}
+	}
+
+	// Generate user config
+	userConfig, err := generateUserConfig(cephObjectStoreUser, inputSecret)
+	if err != nil {
+		return reconcile.Result{}, *cephObjectStoreUser, errors.Wrap(err, "failed to generate user config")
+	}
+	r.userConfig = &userConfig
+
 	// CREATE/UPDATE CEPH USER
-	reconcileResponse, err = r.reconcileCephUser(cephObjectStoreUser)
+	userKeys, err := r.createOrUpdateCephUser(cephObjectStoreUser)
 	if err != nil {
 		r.updateStatus(k8sutil.ObservedGenerationNotAvailable, request.NamespacedName, k8sutil.ReconcileFailedStatus)
-		return reconcileResponse, *cephObjectStoreUser, err
+		return reconcile.Result{}, *cephObjectStoreUser, errors.Wrapf(err, "failed to create/update object store user %q", request.NamespacedName)
 	}
+
+	// TODO: REMOVE BEFORE MERGE !!!!!!
+	logger.Infof("===== userKeys: %#v", userKeys) // TODO: REMOVE BEFORE MERGE !!!!!!
+	// TODO: REMOVE BEFORE MERGE !!!!!!
 
 	// CREATE/UPDATE KUBERNETES SECRET
 	store, err := r.getObjectStore(cephObjectStoreUser.Spec.Store)
@@ -266,6 +281,7 @@ func (r *ReconcileObjectStoreUser) reconcile(request reconcile.Request) (reconci
 	}
 
 	tlsSecretName := store.Spec.Gateway.SSLCertificateRef
+	// TODO: use `userKeys` as input param here
 	reconcileResponse, err = r.reconcileCephUserSecret(cephObjectStoreUser, tlsSecretName)
 	if err != nil {
 		r.updateStatus(k8sutil.ObservedGenerationNotAvailable, request.NamespacedName, k8sutil.ReconcileFailedStatus)
@@ -281,19 +297,13 @@ func (r *ReconcileObjectStoreUser) reconcile(request reconcile.Request) (reconci
 	return reconcile.Result{}, *cephObjectStoreUser, nil
 }
 
-func (r *ReconcileObjectStoreUser) reconcileCephUser(cephObjectStoreUser *cephv1.CephObjectStoreUser) (reconcile.Result, error) {
-	err := r.createOrUpdateCephUser(cephObjectStoreUser)
-	if err != nil {
-		return reconcile.Result{}, errors.Wrapf(err, "failed to create/update object store user %q", cephObjectStoreUser.Name)
-	}
+func (r *ReconcileObjectStoreUser) createOrUpdateCephUser(u *cephv1.CephObjectStoreUser) ([]admin.UserKeySpec, error) {
+	nsName := types.NamespacedName{Namespace: u.Namespace, Name: u.Name}
 
-	return reconcile.Result{}, nil
-}
-
-func (r *ReconcileObjectStoreUser) createOrUpdateCephUser(u *cephv1.CephObjectStoreUser) error {
 	logger.Infof("creating ceph object user %q in namespace %q", u.Name, u.Namespace)
+	emptyKeys := []admin.UserKeySpec{}
 
-	logCreateOrUpdate := fmt.Sprintf("retrieved existing ceph object user %q", u.Name)
+	logCreateOrUpdate := fmt.Sprintf("retrieved existing ceph object user %q", nsName)
 	var user admin.User
 	var err error
 	user, err = r.objContext.AdminOpsClient.GetUser(r.opManagerContext, *r.userConfig)
@@ -301,26 +311,45 @@ func (r *ReconcileObjectStoreUser) createOrUpdateCephUser(u *cephv1.CephObjectSt
 		if errors.Is(err, admin.ErrNoSuchUser) {
 			user, err = r.objContext.AdminOpsClient.CreateUser(r.opManagerContext, *r.userConfig)
 			if err != nil {
-				return errors.Wrapf(err, "failed to create ceph object user %v", &r.userConfig.ID)
+				return emptyKeys, errors.Wrapf(err, "failed to create ceph object user %q", r.userConfig.ID)
 			}
-			logCreateOrUpdate = fmt.Sprintf("created ceph object user %q", u.Name)
+			logCreateOrUpdate = fmt.Sprintf("created ceph object user %q for %q", r.userConfig.ID, nsName)
 		} else {
-			return errors.Wrapf(err, "failed to get details from ceph object user %q", u.Name)
+			return emptyKeys, errors.Wrapf(err, "failed to get details from ceph object user %q", r.userConfig.ID)
 		}
 	}
 
+	// TODO: REMOVE BEFORE MERGE !!!!!!
+	logger.Debugf("===== ceph user config: %#v", user)             // TODO: REMOVE BEFORE MERGE !!!!!!
+	logger.Debugf("===== desired user config: %#v", *r.userConfig) // TODO: REMOVE BEFORE MERGE !!!!!!
+	// TODO: REMOVE BEFORE MERGE !!!!!!
+
+	needUpdate := false // need to update user config?
+
 	// Update max bucket if necessary
-	logger.Tracef("user capabilities(id: %s, caps: %#v, user caps: %s, op mask: %s)",
-		user.ID, user.Caps, user.UserCaps, user.OpMask)
 	if *user.MaxBuckets != *r.userConfig.MaxBuckets {
+		logger.Infof("user %q for %q will be updated to set max buckets", r.userConfig.ID, nsName)
+		needUpdate = true
+	}
+
+	// Update keys if necessary
+	if !userKeysEqual(user.Keys, r.userConfig.Keys) {
+		logger.Infof("user %q for %q will be updated to set credential keys", r.userConfig.ID, nsName)
+		needUpdate = true
+	}
+
+	// Update user config if necessary
+	if needUpdate {
 		user, err = r.objContext.AdminOpsClient.ModifyUser(r.opManagerContext, *r.userConfig)
 		if err != nil {
-			return errors.Wrapf(err, "failed to update ceph object user %q max buckets", r.userConfig.ID)
+			return emptyKeys, errors.Wrapf(err, "failed to update ceph object user %q for %q", r.userConfig.ID, nsName)
 		}
-		logCreateOrUpdate = fmt.Sprintf("updated ceph object user %q", u.Name)
+		logCreateOrUpdate = fmt.Sprintf("updated ceph object user %q", nsName)
 	}
 
 	// Update caps if necessary
+	logger.Tracef("user capabilities(id: %s, caps: %#v, user caps: %s, op mask: %s)",
+		user.ID, user.Caps, user.UserCaps, user.OpMask)
 	user.UserCaps = generateUserCaps(user)
 	if user.UserCaps != r.userConfig.UserCaps {
 		// If they are no caps to be removed, the API will return an error "missing user capabilities"
@@ -328,17 +357,17 @@ func (r *ReconcileObjectStoreUser) createOrUpdateCephUser(u *cephv1.CephObjectSt
 			logger.Tracef("remove capabilities %s from user %s", user.UserCaps, r.userConfig.ID)
 			_, err = r.objContext.AdminOpsClient.RemoveUserCap(r.opManagerContext, r.userConfig.ID, user.UserCaps)
 			if err != nil {
-				return errors.Wrapf(err, "failed to remove current ceph object user %q capabilities", r.userConfig.ID)
+				return emptyKeys, errors.Wrapf(err, "failed to remove current ceph object user %q capabilities", r.userConfig.ID)
 			}
 		}
 		if r.userConfig.UserCaps != "" {
 			logger.Tracef("set capabilities %s for user %s", r.userConfig.UserCaps, r.userConfig.ID)
 			_, err = r.objContext.AdminOpsClient.AddUserCap(r.opManagerContext, r.userConfig.ID, r.userConfig.UserCaps)
 			if err != nil {
-				return errors.Wrapf(err, "failed to update ceph object user %q capabilities", r.userConfig.ID)
+				return emptyKeys, errors.Wrapf(err, "failed to update ceph object user %q capabilities", r.userConfig.ID)
 			}
 		}
-		logCreateOrUpdate = fmt.Sprintf("updated ceph object user %q", u.Name)
+		logCreateOrUpdate = fmt.Sprintf("updated ceph object user %q", nsName)
 	}
 
 	var quotaEnabled = false
@@ -362,19 +391,97 @@ func (r *ReconcileObjectStoreUser) createOrUpdateCephUser(u *cephv1.CephObjectSt
 	}
 	err = r.objContext.AdminOpsClient.SetUserQuota(r.opManagerContext, userQuota)
 	if err != nil {
-		return errors.Wrapf(err, "failed to set quotas for user %q", u.Name)
+		return emptyKeys, errors.Wrapf(err, "failed to set quotas for user %q", u.Name)
 	}
 
 	// Set access and secret key
-	if len(r.userConfig.Keys) == 0 {
-		r.userConfig.Keys = make([]admin.UserKeySpec, 1)
-	}
-	r.userConfig.Keys[0].AccessKey = user.Keys[0].AccessKey
-	r.userConfig.Keys[0].SecretKey = user.Keys[0].SecretKey
+	// if len(r.userConfig.Keys) == 0 {
+	// 	r.userConfig.Keys = make([]admin.UserKeySpec, 1)
+	// }
+	// r.userConfig.Keys[0].AccessKey = user.Keys[0].AccessKey
+	// r.userConfig.Keys[0].SecretKey = user.Keys[0].SecretKey
+
 	logger.Info(logCreateOrUpdate)
 
-	return nil
+	return user.Keys, nil
 }
+
+// todo: unit tests
+func userKeysEqual(aa, bb []admin.UserKeySpec) bool {
+	if len(aa) != len(bb) {
+		return false
+	}
+	for _, a := range aa {
+		if !keyExistsInList(bb, a) {
+			return false
+		}
+	}
+	return true
+}
+
+func keyExistsInList(list []admin.UserKeySpec, key admin.UserKeySpec) bool {
+	for _, k := range list {
+		// there are lots of key fields, but only access and secret key really matter
+		if k.AccessKey == key.AccessKey && k.SecretKey == key.SecretKey {
+			return true
+		}
+	}
+	return false
+}
+
+// func (r *ReconcileObjectStoreUser) reconcileCredentials(u *cephv1.CephObjectStoreUser) error {
+// 	// nsName := types.NamespacedName{
+// 	// 	Namespace: u.Namespace,
+// 	// 	Name:      u.Name,
+// 	// }
+// 	// if u.Spec.InputCredentials.SecretName != "" {
+// 	// 	inputSecret := corev1.Secret{}
+// 	// 	if err := r.client.Get(r.clusterInfo.Context, nsName, &inputSecret); err != nil {
+// 	// 		// do not update credentials status; no credential changes were applied
+// 	// 		return errors.Wrapf(err, "failed to get input secret %q", inputSecret)
+// 	// 	}
+
+// 		// once rook begins to update user creds, assume an undefined internal state
+// 		// even if RGW returns failure (or timeout), sometimes there is a partial internal update
+
+// 		// TODO: update status with secretName, secretGeneration=-1
+
+// 	}
+// 	//   if spec.inputCredentials.inputSecret is set:
+// 	//      if inputSecret doesn't exist:
+// 	//        return error // we know that the internal state is still the previously set secret
+
+// 	//      secretObj, error = getSecret(inputSecret)
+// 	//      if error:
+// 	//        return error // we know that the internal state is still the previously set secret
+
+// 	//      // once rook begins to update the user creds, we assume an undefined internal state
+// 	//      // even if RGW returns failure (or timeout), sometimes there is a partial internal update
+// 	//      set status.secretName = inputSecret, status.secretGeneration=-1
+
+// 	//      error = setUserCreds(user, creds(secretObj.data))
+// 	//      if error:
+// 	//         return error // no need to change status since undefined state will indicate a problem
+// 	//   endif
+
+// 	//   // regardless of whether the input secret is used, Rook always gets the current internal creds to apply to the reference secret
+// 	//   currentCreds = getUserCreds(user)
+// 	//   error = updateReferenceSecret(currentCreds)
+// 	//   if error:
+// 	//     // in case where inputSecret is present, there is no need to change status since undefined state will indicate a problem
+// 	//     return error
+
+// 	//   if spec.inputCredentials.inputSecret is not set:
+// 	//     set status.secretName = "", staus.secretGeneration=0
+// 	//     return success
+
+// 	//   if currentCreds != creds(inutSecret.data):
+// 	//     return error(input secret was not applied successfully) // keep undefined status to indicate a problem
+
+// 	//   set status.secretName = inputSecret, status.secretGeneration = secretObj.generation
+
+// 	// return success
+// }
 
 func (r *ReconcileObjectStoreUser) initializeObjectStoreContext(u *cephv1.CephObjectStoreUser) error {
 	err := r.objectStoreInitialized(u)
@@ -436,7 +543,7 @@ func generateUserCaps(user admin.User) string {
 	return caps
 }
 
-func generateUserConfig(user *cephv1.CephObjectStoreUser) admin.User {
+func generateUserConfig(user *cephv1.CephObjectStoreUser, inputCredentialSecret *corev1.Secret) (admin.User, error) {
 	// Set DisplayName to match Name if DisplayName is not set
 	displayName := user.Spec.DisplayName
 	if len(displayName) == 0 {
@@ -454,6 +561,25 @@ func generateUserConfig(user *cephv1.CephObjectStoreUser) admin.User {
 	userConfig.MaxBuckets = &defaultMaxBuckets
 	if user.Spec.Quotas != nil && user.Spec.Quotas.MaxBuckets != nil {
 		userConfig.MaxBuckets = user.Spec.Quotas.MaxBuckets
+	}
+
+	if inputCredentialSecret != nil {
+		access, ok := inputCredentialSecret.Data["AccessKey"]
+		if !ok {
+			return admin.User{}, fmt.Errorf("inputCredentials secret %q has no %q data", inputCredentialSecret.Name, "AccessKey")
+		}
+		secret, ok := inputCredentialSecret.Data["SecretKey"]
+		if !ok {
+			return admin.User{}, fmt.Errorf("inputCredentials secret %q has no %q data", inputCredentialSecret.Name, "SecretKey")
+		}
+		genKey := false
+		userConfig.GenerateKey = &genKey
+		inputKey := admin.UserKeySpec{
+			UID:       user.Name,
+			AccessKey: string(access),
+			SecretKey: string(secret),
+		}
+		userConfig.Keys = []admin.UserKeySpec{inputKey}
 	}
 
 	if user.Spec.Capabilities != nil {
@@ -507,7 +633,7 @@ func generateUserConfig(user *cephv1.CephObjectStoreUser) admin.User {
 		}
 	}
 
-	return userConfig
+	return userConfig, nil
 }
 
 func generateCephUserSecretName(u *cephv1.CephObjectStoreUser) string {

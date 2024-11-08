@@ -12963,6 +12963,19 @@ spec:
                 displayName:
                   description: The display name for the ceph users
                   type: string
+                inputCredentials:
+                  description: |-
+                    InputCredentials allows specifying custom credentials to apply to the object user, rather
+                    than generating random credentials.
+                  properties:
+                    secretName:
+                      description: |-
+                        The name of the secret that contains credentials to apply to the Rook-generated object user.
+                        Supported secret data keys are `AccessKey` (key ID) and `SecretKey`.
+                      type: string
+                  required:
+                    - secretName
+                  type: object
                 quotas:
                   description: ObjectUserQuotaSpec can be used to set quotas for the object store user to limit their usage. See the [Ceph docs](https://docs.ceph.com/en/latest/radosgw/admin/?#quota-management) for more
                   nullable: true
@@ -12998,6 +13011,21 @@ spec:
                   additionalProperties:
                     type: string
                   nullable: true
+                  type: object
+                inputCredentials:
+                  description: InputCredentials reports the latest info about which input credentials Rook has applied, if any.
+                  properties:
+                    secretGeneration:
+                      description: |-
+                        The resource generation of the input credential secret which Rook successfully applied to the
+                        object user.
+                      type: string
+                    secretName:
+                      description: The name of the input credential secret which Rook successfully applied to the object user.
+                      type: string
+                  required:
+                    - secretGeneration
+                    - secretName
                   type: object
                 observedGeneration:
                   description: ObservedGeneration is the latest generation observed by the controller.
