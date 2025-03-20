@@ -2025,6 +2025,9 @@ type ObjectStoreUserSpec struct {
 	// will generate them.
 	// +optional
 	Keys []ObjectUserKey `json:"keys,omitempty"`
+	// Disable creation of the automatic secret with S3 credentials.
+	// +optional
+	DisableAutomaticSecret bool `json:"disableAutomaticSecret,omitempty"`
 	// The namespace where the parent CephCluster and CephObjectStore are found
 	// +optional
 	ClusterNamespace string `json:"clusterNamespace,omitempty"`

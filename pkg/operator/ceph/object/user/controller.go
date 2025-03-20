@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"reflect"
 	"slices"
+	"sort"
 
 	"github.com/ceph/go-ceph/rgw/admin"
 	"github.com/coreos/pkg/capnslog"
@@ -654,25 +655,26 @@ func (r *ReconcileObjectStoreUser) reconcileCephUserSecret(cephObjectStoreUser *
 	// Generate Kubernetes Secret
 	secret := r.generateCephUserSecret(cephObjectStoreUser, userConfig, tlsSecretName)
 
-	// only manage the secret if there are no explicit keys
-	if len(cephObjectStoreUser.Spec.Keys) == 0 {
-		// Set owner ref to the object store user object
-		if err := controllerutil.SetControllerReference(cephObjectStoreUser, secret, r.scheme); err != nil {
-			return reconcile.Result{}, errors.Wrapf(err, "failed to set owner reference of ceph object user secret %q", secret.Name)
-		}
-
-		// Create Kubernetes Secret
-		if err := opcontroller.CreateOrUpdateObject(r.opManagerContext, r.client, secret); err != nil {
-			return reconcile.Result{}, errors.Wrapf(err, "failed to create or update ceph object user %q secret", secret.Name)
-		}
-	} else {
-		// remove the secret if explicit keys are set
+	// only allow the automatic secret to be disabled when there are explicit keys
+	if len(cephObjectStoreUser.Spec.Keys) > 0 && cephObjectStoreUser.Spec.DisableAutomaticSecret {
+		// remove the secret, if it exists, when automatic secret generation is disabled
 		if err := r.context.Clientset.CoreV1().Secrets(secret.Namespace).Delete(context.TODO(), secret.Name, metav1.DeleteOptions{}); err != nil {
 			// if the secret is not found, we can ignore the error
 			if !kerrors.IsNotFound(err) {
 				return reconcile.Result{}, errors.Wrapf(err, "failed to delete secret %q", secret.Name)
 			}
 		}
+		return reconcile.Result{}, nil
+	}
+
+	// Set owner ref to the object store user object
+	if err := controllerutil.SetControllerReference(cephObjectStoreUser, secret, r.scheme); err != nil {
+		return reconcile.Result{}, errors.Wrapf(err, "failed to set owner reference of ceph object user secret %q", secret.Name)
+	}
+
+	// Create Kubernetes Secret
+	if err := opcontroller.CreateOrUpdateObject(r.opManagerContext, r.client, secret); err != nil {
+		return reconcile.Result{}, errors.Wrapf(err, "failed to create or update ceph object user %q secret", secret.Name)
 	}
 
 	return reconcile.Result{}, nil
@@ -852,6 +854,12 @@ func (r *ReconcileObjectStoreUser) updateKeyStatus(name types.NamespacedName, re
 			ResourceVersion: secret.ResourceVersion,
 		})
 	}
+
+	// assume map key ordering is unstable between reconciles and sort the slice
+	// by secret name
+	sort.Slice(keyStatus, func(i, j int) bool {
+		return keyStatus[i].Name < keyStatus[j].Name
+	})
 
 	user.Status.Keys = keyStatus
 

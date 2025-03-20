@@ -160,8 +160,9 @@ var (
 			Namespace: ns.Name,
 		},
 		Spec: cephv1.ObjectStoreUserSpec{
-			Store:            objectStore.Name,
-			ClusterNamespace: objectStore.Namespace,
+			Store:                  objectStore.Name,
+			ClusterNamespace:       objectStore.Namespace,
+			DisableAutomaticSecret: true,
 			Keys: []cephv1.ObjectUserKey{
 				{
 					AccessKeyRef: &corev1.SecretKeySelector{
@@ -427,7 +428,7 @@ func TestObjectStoreUserKeys(t *testing.T, k8sh *utils.K8sHelper, installer *ins
 		t.Run(fmt.Sprintf("secret %q does not exist", generateObjectStoreUserSecretName(osu1)), func(t *testing.T) {
 			_, err := k8sh.Clientset.CoreV1().Secrets(ns.Name).Get(ctx, generateObjectStoreUserSecretName(osu1), metav1.GetOptions{})
 			require.Implements(t, (*kerrors.APIStatus)(nil), err)
-			assert.Equal(t, err.(kerrors.APIStatus).Status().Reason, metav1.StatusReasonNotFound)
+			assert.Equal(t, metav1.StatusReasonNotFound, err.(kerrors.APIStatus).Status().Reason)
 		})
 
 		t.Run(fmt.Sprintf("update keys on CephObjectStoreUser %q", osu1.Name), func(t *testing.T) {
@@ -480,7 +481,7 @@ func TestObjectStoreUserKeys(t *testing.T, k8sh *utils.K8sHelper, installer *ins
 		t.Run(fmt.Sprintf("secret %q does not exist", generateObjectStoreUserSecretName(osu1)), func(t *testing.T) {
 			_, err := k8sh.Clientset.CoreV1().Secrets(ns.Name).Get(ctx, generateObjectStoreUserSecretName(osu1), metav1.GetOptions{})
 			require.Implements(t, (*kerrors.APIStatus)(nil), err)
-			assert.Equal(t, err.(kerrors.APIStatus).Status().Reason, metav1.StatusReasonNotFound)
+			assert.Equal(t, metav1.StatusReasonNotFound, err.(kerrors.APIStatus).Status().Reason)
 		})
 
 		// test transition from explicit keys -> automatic secret creation
@@ -640,7 +641,52 @@ func TestObjectStoreUserKeys(t *testing.T, k8sh *utils.K8sHelper, installer *ins
 		t.Run(fmt.Sprintf("secret %q does not exist", generateObjectStoreUserSecretName(osu1)), func(t *testing.T) {
 			_, err := k8sh.Clientset.CoreV1().Secrets(ns.Name).Get(ctx, generateObjectStoreUserSecretName(osu1), metav1.GetOptions{})
 			require.Implements(t, (*kerrors.APIStatus)(nil), err)
-			assert.Equal(t, err.(kerrors.APIStatus).Status().Reason, metav1.StatusReasonNotFound)
+			assert.Equal(t, metav1.StatusReasonNotFound, err.(kerrors.APIStatus).Status().Reason)
+		})
+
+		t.Run(fmt.Sprintf("set DisableAutomaticSecret=false on CephObjectStoreUser %q", osu1.Name), func(t *testing.T) {
+			liveOsu, err := k8sh.RookClientset.CephV1().CephObjectStoreUsers(ns.Name).Get(ctx, osu1.Name, metav1.GetOptions{})
+			require.NoError(t, err)
+
+			liveOsu.Spec.DisableAutomaticSecret = false
+
+			_, err = k8sh.RookClientset.CephV1().CephObjectStoreUsers(ns.Name).Update(ctx, liveOsu, metav1.UpdateOptions{})
+			require.NoError(t, err)
+		})
+
+		// automatic secret was created
+		t.Run(fmt.Sprintf("automatic secret for CephObjectStoreUser %q created", osu1.Name), func(t *testing.T) {
+			secretName := generateObjectStoreUserSecretName(osu1)
+
+			present := utils.Retry(40, time.Second, "Secret exists", func() bool {
+				_, err := k8sh.Clientset.CoreV1().Secrets(ns.Name).Get(ctx, secretName, metav1.GetOptions{})
+				return err == nil
+			})
+			assert.True(t, present)
+		})
+
+		t.Run(fmt.Sprintf("set DisableAutomaticSecret=true on CephObjectStoreUser %q", osu1.Name), func(t *testing.T) {
+			liveOsu, err := k8sh.RookClientset.CephV1().CephObjectStoreUsers(ns.Name).Get(ctx, osu1.Name, metav1.GetOptions{})
+			require.NoError(t, err)
+
+			liveOsu.Spec.DisableAutomaticSecret = true
+
+			_, err = k8sh.RookClientset.CephV1().CephObjectStoreUsers(ns.Name).Update(ctx, liveOsu, metav1.UpdateOptions{})
+			require.NoError(t, err)
+		})
+
+		// operator removed the secret
+		t.Run(fmt.Sprintf("automatic secret for CephObjectStoreUser %q removed", osu1.Name), func(t *testing.T) {
+			secretName := generateObjectStoreUserSecretName(osu1)
+
+			absent := utils.Retry(40, time.Second, "Secret exists", func() bool {
+				_, err := k8sh.Clientset.CoreV1().Secrets(ns.Name).Get(ctx, secretName, metav1.GetOptions{})
+				if err == nil {
+					return false
+				}
+				return metav1.StatusReasonNotFound == err.(kerrors.APIStatus).Status().Reason
+			})
+			assert.True(t, absent)
 		})
 
 		// updating a secret already referenced by a CephObjectStoreUser should trigger a reconcile
