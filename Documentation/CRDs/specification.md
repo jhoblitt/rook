@@ -2101,18 +2101,6 @@ will generate them.</p>
 </tr>
 <tr>
 <td>
-<code>disableAutomaticSecret</code><br/>
-<em>
-bool
-</em>
-</td>
-<td>
-<em>(Optional)</em>
-<p>Disable creation of the automatic secret with S3 credentials.</p>
-</td>
-</tr>
-<tr>
-<td>
 <code>clusterNamespace</code><br/>
 <em>
 string
@@ -10421,18 +10409,6 @@ ObjectUserQuotaSpec
 <em>(Optional)</em>
 <p>Allows specifying credentials for the user. If not provided, the operator
 will generate them.</p>
-</td>
-</tr>
-<tr>
-<td>
-<code>disableAutomaticSecret</code><br/>
-<em>
-bool
-</em>
-</td>
-<td>
-<em>(Optional)</em>
-<p>Disable creation of the automatic secret with S3 credentials.</p>
 </td>
 </tr>
 <tr>

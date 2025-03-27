@@ -656,18 +656,6 @@ func (r *ReconcileObjectStoreUser) reconcileCephUserSecret(cephObjectStoreUser *
 	// Generate Kubernetes Secret
 	secret := r.generateCephUserSecret(cephObjectStoreUser, userConfig, tlsSecretName)
 
-	// only allow the automatic secret to be disabled when there are explicit keys
-	if len(cephObjectStoreUser.Spec.Keys) > 0 && cephObjectStoreUser.Spec.DisableAutomaticSecret {
-		// remove the secret, if it exists, when automatic secret generation is disabled
-		if err := r.context.Clientset.CoreV1().Secrets(secret.Namespace).Delete(context.TODO(), secret.Name, metav1.DeleteOptions{}); err != nil {
-			// if the secret is not found, we can ignore the error
-			if !kerrors.IsNotFound(err) {
-				return reconcile.Result{}, errors.Wrapf(err, "failed to delete secret %q", secret.Name)
-			}
-		}
-		return reconcile.Result{}, nil
-	}
-
 	// Set owner ref to the object store user object
 	if err := controllerutil.SetControllerReference(cephObjectStoreUser, secret, r.scheme); err != nil {
 		return reconcile.Result{}, errors.Wrapf(err, "failed to set owner reference of ceph object user secret %q", secret.Name)

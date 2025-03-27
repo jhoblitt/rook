@@ -12986,9 +12986,6 @@ spec:
                 clusterNamespace:
                   description: The namespace where the parent CephCluster and CephObjectStore are found
                   type: string
-                disableAutomaticSecret:
-                  description: Disable creation of the automatic secret with S3 credentials.
-                  type: boolean
                 displayName:
                   description: The display name for the ceph users
                   type: string

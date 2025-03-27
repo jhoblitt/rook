@@ -30,7 +30,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	corev1 "k8s.io/api/core/v1"
-	kerrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
@@ -160,9 +159,8 @@ var (
 			Namespace: ns.Name,
 		},
 		Spec: cephv1.ObjectStoreUserSpec{
-			Store:                  objectStore.Name,
-			ClusterNamespace:       objectStore.Namespace,
-			DisableAutomaticSecret: true,
+			Store:            objectStore.Name,
+			ClusterNamespace: objectStore.Namespace,
 			Keys: []cephv1.ObjectUserKey{
 				{
 					AccessKeyRef: &corev1.SecretKeySelector{
@@ -259,7 +257,7 @@ func checkStatusKeys(t *testing.T, k8sh *utils.K8sHelper, osu cephv1.CephObjectS
 	})
 }
 
-func checkRgwUserKeys(t *testing.T, adminClient *admin.API, osu cephv1.CephObjectStoreUser, expectedSecrets []*corev1.Secret) {
+func checkRgwUserKeys(t *testing.T, adminClient *admin.API, osu cephv1.CephObjectStoreUser, expectedSecrets []*corev1.Secret, accessKeyName, secretKeyName string) {
 	t.Run(fmt.Sprintf("rgw user %q has keys set", osu.Name), func(t *testing.T) {
 		ctx := context.TODO()
 
@@ -272,13 +270,13 @@ func checkRgwUserKeys(t *testing.T, adminClient *admin.API, osu cephv1.CephObjec
 				if err != nil {
 					return false
 				}
-				keySpec, err = findUserKeySpec(liveUser.Keys, string(secret.Data["AWS_ACCESS_KEY_ID"]))
+				keySpec, err = findUserKeySpec(liveUser.Keys, string(secret.Data[accessKeyName]))
 				return err == nil
 			})
 			require.True(t, inSync)
 
-			assert.Equal(t, string(secret.Data["AWS_ACCESS_KEY_ID"]), keySpec.AccessKey)
-			assert.Equal(t, string(secret.Data["AWS_SECRET_ACCESS_KEY"]), keySpec.SecretKey)
+			assert.Equal(t, string(secret.Data[accessKeyName]), keySpec.AccessKey)
+			assert.Equal(t, string(secret.Data[secretKeyName]), keySpec.SecretKey)
 		}
 
 		// check that no extra keys are present
@@ -420,16 +418,9 @@ func TestObjectStoreUserKeys(t *testing.T, k8sh *utils.K8sHelper, installer *ins
 		{
 			secrets := []*corev1.Secret{secret1, secret2, secret3}
 
-			checkRgwUserKeys(t, adminClient, osu1, secrets)
+			checkRgwUserKeys(t, adminClient, osu1, secrets, "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY")
 			checkStatusKeys(t, k8sh, osu1, secrets)
 		}
-
-		// operator did not create a secret for the user because the keys were set explicitly
-		t.Run(fmt.Sprintf("secret %q does not exist", generateObjectStoreUserSecretName(osu1)), func(t *testing.T) {
-			_, err := k8sh.Clientset.CoreV1().Secrets(ns.Name).Get(ctx, generateObjectStoreUserSecretName(osu1), metav1.GetOptions{})
-			require.Implements(t, (*kerrors.APIStatus)(nil), err)
-			assert.Equal(t, metav1.StatusReasonNotFound, err.(kerrors.APIStatus).Status().Reason)
-		})
 
 		t.Run(fmt.Sprintf("update keys on CephObjectStoreUser %q", osu1.Name), func(t *testing.T) {
 			liveOsu, err := k8sh.RookClientset.CephV1().CephObjectStoreUsers(ns.Name).Get(ctx, osu1.Name, metav1.GetOptions{})
@@ -473,21 +464,14 @@ func TestObjectStoreUserKeys(t *testing.T, k8sh *utils.K8sHelper, installer *ins
 		{
 			secrets := []*corev1.Secret{secret4, secret5}
 
-			checkRgwUserKeys(t, adminClient, osu1, secrets)
+			checkRgwUserKeys(t, adminClient, osu1, secrets, "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY")
 			checkStatusKeys(t, k8sh, osu1, secrets)
 		}
-
-		// operator did not create a secret for the user because the keys were set explicitly
-		t.Run(fmt.Sprintf("secret %q does not exist", generateObjectStoreUserSecretName(osu1)), func(t *testing.T) {
-			_, err := k8sh.Clientset.CoreV1().Secrets(ns.Name).Get(ctx, generateObjectStoreUserSecretName(osu1), metav1.GetOptions{})
-			require.Implements(t, (*kerrors.APIStatus)(nil), err)
-			assert.Equal(t, metav1.StatusReasonNotFound, err.(kerrors.APIStatus).Status().Reason)
-		})
 
 		// test transition from explicit keys -> automatic secret creation
 
 		// when all explicit keys are removed from CephObjectStoreUser, one should
-		// be left in place and the operator should create a k8s secret for it
+		// be left in place and the operator should [still] create a k8s secret for it
 		t.Run(fmt.Sprintf("remove all keys set on CephObjectStoreUser %q", osu1.Name), func(t *testing.T) {
 			liveOsu, err := k8sh.RookClientset.CephV1().CephObjectStoreUsers(ns.Name).Get(ctx, osu1.Name, metav1.GetOptions{})
 			require.NoError(t, err)
@@ -496,49 +480,29 @@ func TestObjectStoreUserKeys(t *testing.T, k8sh *utils.K8sHelper, installer *ins
 
 			_, err = k8sh.RookClientset.CephV1().CephObjectStoreUsers(ns.Name).Update(ctx, liveOsu, metav1.UpdateOptions{})
 			require.NoError(t, err)
-		})
 
-		// secret was created
-		t.Run(fmt.Sprintf("automatic secret for CephObjectStoreUser %q created", osu1.Name), func(t *testing.T) {
-			secretName := generateObjectStoreUserSecretName(osu1)
-
-			present := utils.Retry(40, time.Second, "Secret exists", func() bool {
-				_, err := k8sh.Clientset.CoreV1().Secrets(ns.Name).Get(ctx, secretName, metav1.GetOptions{})
-				return err == nil
-			})
-			assert.True(t, present)
-		})
-
-		// keys updated on user
-		t.Run(fmt.Sprintf("keys set on rgw user %q match automatic secret", osu1.Name), func(t *testing.T) {
-			var liveUser admin.User
-			secretName := generateObjectStoreUserSecretName(osu1)
-
-			liveSecret, err := k8sh.Clientset.CoreV1().Secrets(osu1.Namespace).Get(ctx, secretName, metav1.GetOptions{})
-			require.NoError(t, err)
-			require.NotEmpty(t, liveSecret.Data["AccessKey"])
-			require.NotEmpty(t, liveSecret.Data["SecretKey"])
-
-			// only 1 keypair is expected as all others should be removed
-			secretKeys := []*corev1.Secret{liveSecret}
-
-			// assume that the .Phase doesn't change when updating keys
-			inSync := utils.Retry(40, time.Second, "CephObjectStoreUser keys changed", func() bool {
-				var err error
-				liveUser, err = adminClient.GetUser(ctx, admin.User{ID: osu1.Name})
+			// wait for the number of keys to drop to 1
+			inSync := utils.Retry(40, time.Second, "CephObjectStoreUser has 1 key", func() bool {
+				liveUser, err := adminClient.GetUser(ctx, admin.User{ID: osu1.Name})
 				if err != nil {
 					return false
 				}
-				return len(secretKeys) == len(liveUser.Keys)
+				return len(liveUser.Keys) == 1
 			})
 			require.True(t, inSync)
-			assert.Len(t, liveUser.Keys, 1)
-
-			k, err := findUserKeySpec(liveUser.Keys, string(liveSecret.Data["AccessKey"]))
-			require.NoError(t, err)
-			assert.Equal(t, string(liveSecret.Data["AccessKey"]), k.AccessKey)
-			assert.Equal(t, string(liveSecret.Data["SecretKey"]), k.SecretKey)
 		})
+
+		// keys updated on user
+		{
+			// fetch automatic secret as it should be the only key set on the rgw user
+			secretName := generateObjectStoreUserSecretName(osu1)
+			liveSecret, err := k8sh.Clientset.CoreV1().Secrets(ns.Name).Get(ctx, secretName, metav1.GetOptions{})
+			require.NoError(t, err)
+
+			secrets := []*corev1.Secret{liveSecret}
+
+			checkRgwUserKeys(t, adminClient, osu1, secrets, "AccessKey", "SecretKey")
+		}
 
 		t.Run(fmt.Sprintf("cephObjectStoreUser %q .status.keys is unset", osu1.Name), func(t *testing.T) {
 			liveOsu, err := k8sh.RookClientset.CephV1().CephObjectStoreUsers(ns.Name).Get(ctx, osu1.Name, metav1.GetOptions{})
@@ -633,61 +597,9 @@ func TestObjectStoreUserKeys(t *testing.T, k8sh *utils.K8sHelper, installer *ins
 		{
 			secrets := []*corev1.Secret{secret1, secret2, secret3, secret4, secret5}
 
-			checkRgwUserKeys(t, adminClient, osu1, secrets)
+			checkRgwUserKeys(t, adminClient, osu1, secrets, "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY")
 			checkStatusKeys(t, k8sh, osu1, secrets)
 		}
-
-		// operator removed the secret
-		t.Run(fmt.Sprintf("secret %q does not exist", generateObjectStoreUserSecretName(osu1)), func(t *testing.T) {
-			_, err := k8sh.Clientset.CoreV1().Secrets(ns.Name).Get(ctx, generateObjectStoreUserSecretName(osu1), metav1.GetOptions{})
-			require.Implements(t, (*kerrors.APIStatus)(nil), err)
-			assert.Equal(t, metav1.StatusReasonNotFound, err.(kerrors.APIStatus).Status().Reason)
-		})
-
-		t.Run(fmt.Sprintf("set DisableAutomaticSecret=false on CephObjectStoreUser %q", osu1.Name), func(t *testing.T) {
-			liveOsu, err := k8sh.RookClientset.CephV1().CephObjectStoreUsers(ns.Name).Get(ctx, osu1.Name, metav1.GetOptions{})
-			require.NoError(t, err)
-
-			liveOsu.Spec.DisableAutomaticSecret = false
-
-			_, err = k8sh.RookClientset.CephV1().CephObjectStoreUsers(ns.Name).Update(ctx, liveOsu, metav1.UpdateOptions{})
-			require.NoError(t, err)
-		})
-
-		// automatic secret was created
-		t.Run(fmt.Sprintf("automatic secret for CephObjectStoreUser %q created", osu1.Name), func(t *testing.T) {
-			secretName := generateObjectStoreUserSecretName(osu1)
-
-			present := utils.Retry(40, time.Second, "Secret exists", func() bool {
-				_, err := k8sh.Clientset.CoreV1().Secrets(ns.Name).Get(ctx, secretName, metav1.GetOptions{})
-				return err == nil
-			})
-			assert.True(t, present)
-		})
-
-		t.Run(fmt.Sprintf("set DisableAutomaticSecret=true on CephObjectStoreUser %q", osu1.Name), func(t *testing.T) {
-			liveOsu, err := k8sh.RookClientset.CephV1().CephObjectStoreUsers(ns.Name).Get(ctx, osu1.Name, metav1.GetOptions{})
-			require.NoError(t, err)
-
-			liveOsu.Spec.DisableAutomaticSecret = true
-
-			_, err = k8sh.RookClientset.CephV1().CephObjectStoreUsers(ns.Name).Update(ctx, liveOsu, metav1.UpdateOptions{})
-			require.NoError(t, err)
-		})
-
-		// operator removed the secret
-		t.Run(fmt.Sprintf("automatic secret for CephObjectStoreUser %q removed", osu1.Name), func(t *testing.T) {
-			secretName := generateObjectStoreUserSecretName(osu1)
-
-			absent := utils.Retry(40, time.Second, "Secret exists", func() bool {
-				_, err := k8sh.Clientset.CoreV1().Secrets(ns.Name).Get(ctx, secretName, metav1.GetOptions{})
-				if err == nil {
-					return false
-				}
-				return metav1.StatusReasonNotFound == err.(kerrors.APIStatus).Status().Reason
-			})
-			assert.True(t, absent)
-		})
 
 		// updating a secret already referenced by a CephObjectStoreUser should trigger a reconcile
 		t.Run(fmt.Sprintf("update secret %q data", secret1.Name), func(t *testing.T) {
@@ -710,7 +622,7 @@ func TestObjectStoreUserKeys(t *testing.T, k8sh *utils.K8sHelper, installer *ins
 
 			secrets := []*corev1.Secret{liveSecret, secret2, secret3, secret4, secret5}
 
-			checkRgwUserKeys(t, adminClient, osu1, secrets)
+			checkRgwUserKeys(t, adminClient, osu1, secrets, "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY")
 			checkStatusKeys(t, k8sh, osu1, secrets)
 		}
 

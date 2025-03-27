@@ -613,7 +613,6 @@ metadata:
 spec:
   store: my-store
   clusterNamespace: rook-ceph
-  disableAutomaticSecret: true
   keys:
     - acccessKeyRef
         name: foo-s3
