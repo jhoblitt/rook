@@ -98,6 +98,7 @@ The following table lists the configurable parameters of the rook-operator chart
 | `nodeSelector` | Kubernetes [`nodeSelector`](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector) to add to the Deployment. | `{}` |
 | `obcAllowAdditionalConfigFields` | Many OBC additional config fields may be risky for administrators to allow users control over. The safe and default-allowed fields are 'maxObjects' and 'maxSize'. Other fields should be considered risky. To allow all additional configs, use this value:   "maxObjects,maxSize,bucketMaxObjects,bucketMaxSize,bucketPolicy,bucketLifecycle,bucketOwner" | "maxObjects,maxSize" |
 | `obcProvisionerNamePrefix` | Specify the prefix for the OBC provisioner in place of the cluster namespace | `ceph cluster namespace` |
+| `obcStrictBucketOwner` | EXPERIMENTAL: If true, every OBC must set `additionalConfig.bucketOwner` to the name of a CephObjectStoreUser in the OBC's namespace, OBC credential secrets never contain S3 keys (credentials come from the CephObjectStoreUser's secret; keys handed out before the mode was enabled are revoked), and deleting a CephObjectStoreUser is blocked while OBCs reference it | `false` |
 | `operatorPodLabels` | Custom pod labels for the operator | `{}` |
 | `priorityClassName` | Set the priority class for the rook operator deployment if desired | `nil` |
 | `rbacAggregate.enableOBCs` | If true, create a ClusterRole aggregated to [user facing roles](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) for objectbucketclaims | `false` |

@@ -59,6 +59,8 @@ const (
 	obcAllowAdditionalConfigFieldsSettingName  string = "ROOK_OBC_ALLOW_ADDITIONAL_CONFIG_FIELDS"
 	obcAllowAdditionalConfigFieldsDefaultValue string = "maxObjects,maxSize"
 
+	obcStrictBucketOwnerSettingName string = "ROOK_OBC_STRICT_BUCKET_OWNER"
+
 	revisionHistoryLimitSettingName string = "ROOK_REVISION_HISTORY_LIMIT"
 
 	// UninitializedCephConfigError refers to the error message printed by the Ceph CLI when there is no ceph configuration file
@@ -94,6 +96,8 @@ var (
 
 	// allowed OBC additional config fields
 	obcAllowAdditionalConfigFields = strings.Split(obcAllowAdditionalConfigFieldsDefaultValue, ",")
+
+	obcStrictBucketOwner = false
 )
 
 func DiscoveryDaemonEnabled() bool {
@@ -169,6 +173,20 @@ func SetObcAllowAdditionalConfigFields() {
 
 func ObcAdditionalConfigKeyIsAllowed(configField string) bool {
 	return slices.Contains(obcAllowAdditionalConfigFields, configField)
+}
+
+func SetObcStrictBucketOwner() {
+	strval := k8sutil.GetOperatorSetting(obcStrictBucketOwnerSettingName, "false")
+	var err error
+	obcStrictBucketOwner, err = strconv.ParseBool(strval)
+	if err != nil {
+		logger.Warningf("%s is set to an invalid value %q, set the default value false", obcStrictBucketOwnerSettingName, strval)
+		obcStrictBucketOwner = false
+	}
+}
+
+func ObcStrictBucketOwner() bool {
+	return obcStrictBucketOwner
 }
 
 // canIgnoreHealthErrStatusInReconcile determines whether a status of HEALTH_ERR in the CephCluster can be ignored safely.

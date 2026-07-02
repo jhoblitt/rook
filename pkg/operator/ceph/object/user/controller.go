@@ -322,6 +322,17 @@ func (r *ReconcileObjectStoreUser) reconcile(request reconcile.Request) (reconci
 		log.NamedDebug(request.NamespacedName, logger, "deleting object store user")
 		r.recorder.Eventf(cephObjectStoreUser, nil, corev1.EventTypeNormal, string(cephv1.ReconcileStarted), string(cephv1.ReconcileStarted), "deleting CephObjectStoreUser %q", cephObjectStoreUser.Name)
 
+		if opcontroller.ObcStrictBucketOwner() {
+			deps, err := r.referencingOBCs(cephObjectStoreUser)
+			if err != nil {
+				return reconcile.Result{}, *cephObjectStoreUser, errors.Wrapf(err, "failed to determine whether ObjectBucketClaims reference CephObjectStoreUser %q", request.NamespacedName)
+			}
+			if !deps.Empty() {
+				return opcontroller.WaitForRequeueIfFinalizerBlocked, *cephObjectStoreUser,
+					errors.New(deps.StringWithHeader("CephObjectStoreUser %q cannot be deleted until its dependents are deleted", request.NamespacedName.String()))
+			}
+		}
+
 		err := r.deleteUser(cephObjectStoreUser)
 		if err != nil {
 			return reconcile.Result{}, *cephObjectStoreUser, errors.Wrapf(err, "failed to delete ceph object user %q", cephObjectStoreUser.Name)

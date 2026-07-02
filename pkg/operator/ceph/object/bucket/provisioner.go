@@ -107,6 +107,11 @@ func (p Provisioner) Provision(options *apibkt.BucketOptions) (*bktv1alpha1.Obje
 	if err != nil {
 		return nil, err
 	}
+
+	err = p.enforceStrictBucketOwner(bucket)
+	if err != nil {
+		return nil, err
+	}
 	log.NamedInfo(nsName, logger, "Provision: creating bucket %q for OBC %q", p.bucketName, options.ObjectBucketClaim.Name)
 
 	p.accessKeyID, p.secretAccessKey, err = bucket.getUserCreds()
@@ -161,6 +166,11 @@ func (p Provisioner) Provision(options *apibkt.BucketOptions) (*bktv1alpha1.Obje
 		return nil, errors.Wrapf(err, "failed to set additional settings for OBC %q in NS %q associated with CephObjectStore %q in NS %q", options.ObjectBucketClaim.Name, options.ObjectBucketClaim.Namespace, p.objectStoreName, p.clusterInfo.Namespace)
 	}
 
+	err = p.deleteTransitionedGeneratedUser(bucket)
+	if err != nil {
+		return nil, err
+	}
+
 	return p.composeObjectBucket(bucket), nil
 }
 
@@ -179,6 +189,11 @@ func (p Provisioner) Grant(options *apibkt.BucketOptions) (*bktv1alpha1.ObjectBu
 
 	// initialize and set the AWS services and commonly used variables
 	err = p.initializeCreateOrGrant(bucket)
+	if err != nil {
+		return nil, err
+	}
+
+	err = p.enforceStrictBucketOwner(bucket)
 	if err != nil {
 		return nil, err
 	}
@@ -488,6 +503,18 @@ func (p *Provisioner) initializeDeleteOrRevoke(ob *bktv1alpha1.ObjectBucket) err
 
 // Return the OB struct with minimal fields filled in.
 func (p *Provisioner) composeObjectBucket(bucket *bucket) *bktv1alpha1.ObjectBucket {
+	// in strict bucketOwner mode the owner's S3 keys are delivered via the
+	// CephObjectStoreUser's own secret, so they are withheld from the OB.
+	// lib-bucket requires non-nil Authentication and always creates the OBC's
+	// credentials secret; empty Authentication yields a secret with no keys.
+	auth := &bktv1alpha1.Authentication{}
+	if !opcontroller.ObcStrictBucketOwner() {
+		auth.AccessKeys = &bktv1alpha1.AccessKeys{
+			AccessKeyID:     p.accessKeyID,
+			SecretAccessKey: p.secretAccessKey,
+		}
+	}
+
 	conn := &bktv1alpha1.Connection{
 		Endpoint: &bktv1alpha1.Endpoint{
 			// if there are multiple endpoints on the object store, the OBC will get the endpoint
@@ -497,12 +524,7 @@ func (p *Provisioner) composeObjectBucket(bucket *bucket) *bktv1alpha1.ObjectBuc
 			BucketName:           p.bucketName,
 			AdditionalConfigData: p.additionalConfigData,
 		},
-		Authentication: &bktv1alpha1.Authentication{
-			AccessKeys: &bktv1alpha1.AccessKeys{
-				AccessKeyID:     p.accessKeyID,
-				SecretAccessKey: p.secretAccessKey,
-			},
-		},
+		Authentication: auth,
 		AdditionalState: map[string]string{
 			CephUser:             p.cephUserName,
 			ObjectStoreName:      p.objectStoreName,

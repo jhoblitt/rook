@@ -151,7 +151,9 @@ func additionalConfigSpecFromMap(config map[string]string) (*additionalConfigSpe
 	}
 
 	if _, ok := config["bucketOwner"]; ok {
-		if !opcontroller.ObcAdditionalConfigKeyIsAllowed("bucketOwner") {
+		// strict bucketOwner mode requires bucketOwner on every OBC, so the
+		// field is implicitly allowed without an allow-list entry
+		if !opcontroller.ObcAdditionalConfigKeyIsAllowed("bucketOwner") && !opcontroller.ObcStrictBucketOwner() {
 			return nil, errors.Errorf("OBC config %q is not allowed", "bucketOwner")
 		}
 		bucketOwner := config["bucketOwner"]

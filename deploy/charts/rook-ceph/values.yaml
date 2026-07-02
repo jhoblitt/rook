@@ -234,6 +234,12 @@ obcProvisionerNamePrefix:
 # @default -- "maxObjects,maxSize"
 obcAllowAdditionalConfigFields: "maxObjects,maxSize"
 
+# -- EXPERIMENTAL: If true, every OBC must set `additionalConfig.bucketOwner` to the name of a
+# CephObjectStoreUser in the OBC's namespace, OBC credential secrets never contain S3 keys
+# (credentials come from the CephObjectStoreUser's secret; keys handed out before the mode was
+# enabled are revoked), and deleting a CephObjectStoreUser is blocked while OBCs reference it
+obcStrictBucketOwner: false
+
 monitoring:
   # -- Enable monitoring. Requires Prometheus to be pre-installed.
   # Enabling will also create RBAC rules to allow Operator to create ServiceMonitors
