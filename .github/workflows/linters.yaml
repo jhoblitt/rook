@@ -64,4 +64,6 @@ jobs:
         with:
           config: tests/scripts/mlc_config.json
           paths: Documentation
+          rate: "5"
+          retry-count: "2"
           cache: "true"
