@@ -54,3 +54,16 @@ jobs:
 
       - name: Setup black for py
         uses: psf/black@87928e6d6761a4a6d22250e1fee5601b3998086e # stable
+
+  check-markdown-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check markdown links
+        uses: jhoblitt/markdown-linkerator-action@v0
+        with:
+          config: tests/scripts/mlc_config.json
+          paths: Documentation
+          rate: "5"
+          retry-count: "2"
+          cache: "true"

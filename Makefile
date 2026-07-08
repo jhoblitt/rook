@@ -200,6 +200,10 @@ lint.go: lint.fmt lint.vet golangci-lint ## run various go linters
 lint.markdown: ## Check formatting of documentation sources
 	@$(MARKDOWNLINT) "Documentation/**/**.md" "#Documentation/Helm-Charts/**" --config .markdownlint-cli2.cjs
 
+.PHONY: lint.markdown-links
+lint.markdown-links:
+	@$(DOCKERCMD) run --rm -v "$$PWD:/workspace" -w /workspace -e GITHUB_TOKEN ghcr.io/jhoblitt/markdown-linkerator:v0 --config tests/scripts/mlc_config.json --rate 5 --retry-count 2 Documentation
+
 .PHONY: fix.markdown
 fix.markdown: ## Check and fix formatting of documentation sources
 	@$(MARKDOWNLINT) "Documentation/**/**.md" "#Documentation/Helm-Charts/**" --fix --config .markdownlint-cli2.cjs
