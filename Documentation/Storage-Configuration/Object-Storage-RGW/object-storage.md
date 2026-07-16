@@ -274,6 +274,10 @@ s5cmd put obj s3://bucket2/obj --storage-class=REDUCED_REDUNDANCY
 
 ```
 
+Buckets provisioned through [ObjectBucketClaims](ceph-object-bucket-claim.md) can also select a
+placement and a default storage class with the `locationConstraint` and `bucketStorageClass`
+StorageClass parameters or OBC `additionalConfig` fields (the OBC fields are disabled by default).
+
 ### Connect to an External Object Store
 
 Rook can connect to existing RGW gateways to work in conjunction with the external mode of the `CephCluster` CRD. First, create a `rgw-admin-ops-user` user in the Ceph cluster with the necessary caps:

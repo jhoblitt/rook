@@ -93,6 +93,57 @@ func TestDeleteBucket(t *testing.T) {
 	})
 }
 
+func TestBucketExists(t *testing.T) {
+	clusterInfo := client.AdminTestClusterInfo("ns")
+	p := NewProvisioner(&clusterd.Context{RookClientset: rookclient.NewSimpleClientset(), Clientset: test.New(t, 1)}, clusterInfo)
+	mockClient := func(statusCode int, body string) *cephobject.MockClient {
+		return &cephobject.MockClient{
+			MockDo: func(req *http.Request) (*http.Response, error) {
+				if req.URL.Path == "rook-ceph-rgw-my-store.mycluster.svc/admin/bucket" && req.Method == http.MethodGet {
+					return &http.Response{
+						StatusCode: statusCode,
+						Body:       io.NopCloser(bytes.NewReader([]byte(body))),
+					}, nil
+				}
+				return nil, fmt.Errorf("unexpected request: %q. method %q. path %q", req.URL.RawQuery, req.Method, req.URL.Path)
+			},
+		}
+	}
+
+	t.Run("bucket exists", func(t *testing.T) {
+		adminClient, err := admin.New("rook-ceph-rgw-my-store.mycluster.svc", "53S6B9S809NUP19IJ2K3", "1bXPegzsGClvoGAiJdHQD1uOW2sQBLAZM9j9VtXR", mockClient(200, `{"bucket":"bkt","owner":"bob","placement_rule":"loc-a"}`))
+		assert.NoError(t, err)
+		p.adminOpsClient = adminClient
+		exists, info, err := p.bucketExists("bkt")
+		assert.NoError(t, err)
+		assert.True(t, exists)
+		assert.Equal(t, "bob", info.Owner)
+		assert.Equal(t, "loc-a", info.PlacementRule)
+	})
+
+	t.Run("bucket does not exist", func(t *testing.T) {
+		status, _ := json.Marshal(statusError{"NoSuchBucket", "requestid", "hostid"})
+		adminClient, err := admin.New("rook-ceph-rgw-my-store.mycluster.svc", "53S6B9S809NUP19IJ2K3", "1bXPegzsGClvoGAiJdHQD1uOW2sQBLAZM9j9VtXR", mockClient(404, string(status)))
+		assert.NoError(t, err)
+		p.adminOpsClient = adminClient
+		exists, info, err := p.bucketExists("bkt")
+		assert.NoError(t, err)
+		assert.False(t, exists)
+		assert.Nil(t, info)
+	})
+
+	t.Run("error other than NoSuchBucket", func(t *testing.T) {
+		status, _ := json.Marshal(statusError{"AccessDenied", "requestid", "hostid"})
+		adminClient, err := admin.New("rook-ceph-rgw-my-store.mycluster.svc", "53S6B9S809NUP19IJ2K3", "1bXPegzsGClvoGAiJdHQD1uOW2sQBLAZM9j9VtXR", mockClient(403, string(status)))
+		assert.NoError(t, err)
+		p.adminOpsClient = adminClient
+		exists, info, err := p.bucketExists("bkt")
+		assert.Error(t, err)
+		assert.False(t, exists)
+		assert.Nil(t, info)
+	})
+}
+
 func TestIsObcGeneratedUser(t *testing.T) {
 	clusterInfo := client.AdminTestClusterInfo("ns")
 	p := NewProvisioner(&clusterd.Context{RookClientset: rookclient.NewSimpleClientset(), Clientset: test.New(t, 1)}, clusterInfo)

@@ -42,6 +42,11 @@ const (
 	ObjectStoreName      = "objectStoreName"
 	ObjectStoreNamespace = "objectStoreNamespace"
 	objectStoreEndpoint  = "endpoint"
+	// locationConstraintKey and bucketStorageClassKey are each both a
+	// StorageClass parameter and an OBC additionalConfig key; the OBC value
+	// overrides the StorageClass value.
+	locationConstraintKey = "locationConstraint"
+	bucketStorageClassKey = "bucketStorageClass"
 )
 
 func NewBucketController(cfg *rest.Config, p *Provisioner) (*provisioner.Provisioner, error) {
@@ -71,6 +76,28 @@ func isStaticBucket(sc *storagev1.StorageClass) (string, bool) {
 	const key = "bucketName"
 	val, ok := sc.Parameters[key]
 	return val, ok
+}
+
+// getLocationConstraint returns the effective location constraint for
+// greenfield bucket creation: the OBC additionalConfig value, when set,
+// overrides the StorageClass parameter. Empty means no constraint was
+// requested.
+func getLocationConstraint(sc *storagev1.StorageClass, additionalConfig *additionalConfigSpec) string {
+	if additionalConfig.locationConstraint != nil {
+		return *additionalConfig.locationConstraint
+	}
+	return sc.Parameters[locationConstraintKey]
+}
+
+// getBucketStorageClass returns the effective default storage class for
+// greenfield bucket creation: the OBC additionalConfig value, when set,
+// overrides the StorageClass parameter. Empty means no storage class was
+// requested.
+func getBucketStorageClass(sc *storagev1.StorageClass, additionalConfig *additionalConfigSpec) string {
+	if additionalConfig.bucketStorageClass != nil {
+		return *additionalConfig.bucketStorageClass
+	}
+	return sc.Parameters[bucketStorageClassKey]
 }
 
 func getCephUser(ob *bktv1alpha1.ObjectBucket) string {
@@ -156,6 +183,22 @@ func additionalConfigSpecFromMap(config map[string]string) (*additionalConfigSpe
 		}
 		bucketOwner := config["bucketOwner"]
 		spec.bucketOwner = &bucketOwner
+	}
+
+	if _, ok := config[locationConstraintKey]; ok {
+		if !opcontroller.ObcAdditionalConfigKeyIsAllowed(locationConstraintKey) {
+			return nil, errors.Errorf("OBC config %q is not allowed", locationConstraintKey)
+		}
+		location := config[locationConstraintKey]
+		spec.locationConstraint = &location
+	}
+
+	if _, ok := config[bucketStorageClassKey]; ok {
+		if !opcontroller.ObcAdditionalConfigKeyIsAllowed(bucketStorageClassKey) {
+			return nil, errors.Errorf("OBC config %q is not allowed", bucketStorageClassKey)
+		}
+		storageClass := config[bucketStorageClassKey]
+		spec.bucketStorageClass = &storageClass
 	}
 
 	return &spec, nil

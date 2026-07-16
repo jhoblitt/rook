@@ -14,3 +14,11 @@ parameters:
   # access to the bucket by creating a new user, attaching it to the bucket, and
   # providing the credentials via a Secret in the namespace of the requesting OBC.
   #bucketName:
+  # To request a bucket location/placement for newly provisioned buckets, set the
+  # RGW location constraint ("<zonegroup>[:<placement-target>]"). Ignored for
+  # existing buckets; bucket placement cannot be changed after creation.
+  #locationConstraint:
+  # To set the default storage class for objects in newly provisioned buckets,
+  # name one of the placement target's storage classes. Ignored for existing
+  # buckets.
+  #bucketStorageClass:

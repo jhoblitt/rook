@@ -76,6 +76,8 @@ spec:
         ]
       }
     bucketOwner: "rgw-user"
+    locationConstraint: "my-store:europe"
+    bucketStorageClass: "REDUCED_REDUNDANCY"
 ```
 
 1. `name` of the `ObjectBucketClaim`. This name becomes the name of the Secret and ConfigMap.
@@ -96,6 +98,8 @@ If both `bucketName` and `generateBucketName` are blank or omitted then the stor
     * `bucketPolicy`: (disabled by default) A raw JSON format string that defines an AWS S3 format the bucket policy. If set, the policy string will override any existing policy set on the bucket and any default bucket policy that the bucket provisioner potentially would have automatically generated.
     * `bucketLifecycle`: (disabled by default) A raw JSON format string that defines an AWS S3 format bucket lifecycle configuration. Note that the rules must be sorted by `ID` in order to be idempotent.
     * `bucketOwner`: (disabled by default)  The name of a pre-existing ceph rgw user account that will own the bucket. A `CephObjectStoreUser` resource may be used to create an ceph rgw user account. If the bucket already exists and is owned by a different user, the bucket will be re-linked to the specified user.
+    * `locationConstraint`: (disabled by default) The bucket location/placement to request when the provisioner creates the bucket. The value is passed verbatim to RGW as the S3 `CreateBucket` `LocationConstraint`, which RGW interprets as `<zonegroup>[:<placement-target>]` (for example `my-store:europe`, or `:europe` for a placement target in the local zonegroup). Invalid values cause bucket creation to fail. The value only applies when a new bucket is created: if the bucket already exists (a brownfield bucket, or a bucket re-linked via `bucketOwner`), the value is ignored and the operator logs the bucket's existing placement, as RGW bucket placement cannot be changed after creation. When set, this overrides the `locationConstraint` parameter of the StorageClass. Placement targets are configured on the `CephObjectStore` via [pool placements](object-storage.md#create-local-object-stores-with-pool-placements) or externally via `radosgw-admin`.
+    * `bucketStorageClass`: (disabled by default) The default storage class for objects in the bucket, one of the storage classes of the bucket's placement target. The value is sent to RGW as the `X-Amz-Storage-Class` header when the bucket is created (the `LocationConstraint` cannot carry a storage class) and is recorded as the storage class of the bucket's placement rule, shown as `<placement-target>/<storage-class>` in bucket info. Objects written without an explicit `X-Amz-Storage-Class` use it. Like `locationConstraint`, it only applies when a new bucket is created, is ignored (with an operator log) when the bucket already exists, and when set overrides the `bucketStorageClass` parameter of the StorageClass. Storage classes are configured per placement via the `CephObjectStore` [pool placements](object-storage.md#create-local-object-stores-with-pool-placements) (every placement also has `STANDARD`).
 
 Several OBC `additionalConfig` fields are disabled by default. Default-disabled additional config
 fields may be risky for administrators to allow users control over, and they should be enabled only
@@ -178,15 +182,19 @@ parameters: [3]
   objectStoreName: my-store
   objectStoreNamespace: rook-ceph
   bucketName: ceph-bucket [4]
-reclaimPolicy: Delete [5]
+  locationConstraint: my-store:europe [5]
+  bucketStorageClass: REDUCED_REDUNDANCY [6]
+reclaimPolicy: Delete [7]
 ```
 
 1. `label`(optional) here associates this `StorageClass` to a specific provisioner.
 2. `provisioner` responsible for handling `OBCs` referencing this `StorageClass`.
-3. **all** `parameter` required.
+3. `objectStoreName` and `objectStoreNamespace` `parameters` are required; `bucketName`, `locationConstraint`, and `bucketStorageClass` are optional.
 4. `bucketName` is required for access to existing buckets but is omitted when provisioning new buckets.
     Unlike greenfield provisioning, the brownfield bucket name appears in the `StorageClass`, not the `OBC`.
-5. rook-ceph provisioner decides how to treat the `reclaimPolicy` when an `OBC` is deleted for the bucket. See explanation as [specified in Kubernetes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#retain)
+5. `locationConstraint`(optional) is the default bucket location/placement requested for buckets provisioned with this class, in the RGW `<zonegroup>[:<placement-target>]` form. An OBC `additionalConfig.locationConstraint` (when allowed) overrides it. It only applies when a new bucket is created; for an existing bucket it is ignored and the operator logs the bucket's actual placement. See the `additionalConfig.locationConstraint` description above.
+6. `bucketStorageClass`(optional) is the default storage class for objects in buckets provisioned with this class, from the placement target's storage classes. An OBC `additionalConfig.bucketStorageClass` (when allowed) overrides it. It only applies when a new bucket is created. See the `additionalConfig.bucketStorageClass` description above.
+7. rook-ceph provisioner decides how to treat the `reclaimPolicy` when an `OBC` is deleted for the bucket. See explanation as [specified in Kubernetes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#retain)
 
     * _Delete_ = physically delete the bucket.
     * _Retain_ = do not physically delete the bucket.

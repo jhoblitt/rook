@@ -21,6 +21,13 @@ type bucket struct {
 	provisioner      *Provisioner
 	options          *apibkt.BucketOptions
 	additionalConfig *additionalConfigSpec
+	// locationConstraint and bucketStorageClass are the effective location
+	// constraint and default storage class for greenfield bucket creation
+	// (the OBC additionalConfig values, falling back to the StorageClass
+	// parameters); empty when not requested. They are passed to RGW verbatim
+	// and only apply when the provisioner creates the bucket.
+	locationConstraint string
+	bucketStorageClass string
 }
 
 // Retrieve the s3 access credentials for the rgw user.  The rgw user will be
@@ -50,15 +57,17 @@ func (b *bucket) getUserCreds() (accessKeyID, secretAccessKey string, err error)
 	return
 }
 
-func (p *Provisioner) bucketExists(name string) (bool, string, error) {
+// bucketExists returns whether the named bucket exists, and its bucket info
+// (owner, placement rule, etc.) when it does.
+func (p *Provisioner) bucketExists(name string) (bool, *admin.Bucket, error) {
 	bucket, err := p.adminOpsClient.GetBucketInfo(p.clusterInfo.Context, admin.Bucket{Bucket: name})
 	if err != nil {
 		if errors.Is(err, admin.ErrNoSuchBucket) {
-			return false, "", nil
+			return false, nil, nil
 		}
-		return false, "", errors.Wrapf(err, "failed to get ceph bucket %q", name)
+		return false, nil, errors.Wrapf(err, "failed to get ceph bucket %q", name)
 	}
-	return true, bucket.Owner, nil
+	return true, &bucket, nil
 }
 
 // Create a Ceph user based on the passed-in name or a generated name. Return the
