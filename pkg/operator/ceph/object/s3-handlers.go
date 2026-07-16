@@ -21,6 +21,7 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -30,6 +31,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	s3types "github.com/aws/aws-sdk-go-v2/service/s3/types"
 	smithylogging "github.com/aws/smithy-go/logging"
+	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"github.com/pkg/errors"
 )
 
@@ -97,21 +99,52 @@ func NewS3Agent(accessKey, secretKey, endpoint string, debug bool, tlsCert []byt
 
 // CreateBucket creates a bucket with the given name
 func (s *S3Agent) CreateBucket(ctx context.Context, name string) error {
-	return s.createBucket(ctx, name, true)
+	return s.createBucket(ctx, name, "", "", true)
 }
 
-func (s *S3Agent) createBucket(ctx context.Context, name string, infoLogging bool) error {
+// CreateBucketWithPlacement creates a bucket with the given name, an optional
+// location constraint, and an optional default storage class. The location is
+// passed to RGW verbatim as the S3 CreateBucketConfiguration.LocationConstraint,
+// which RGW interprets as "<zonegroup>[:<placement-target>]". The storage
+// class is passed as the X-Amz-Storage-Class request header, which RGW records
+// as the storage class of the bucket's placement rule. With both values empty
+// this is equivalent to CreateBucket.
+func (s *S3Agent) CreateBucketWithPlacement(ctx context.Context, name, location, storageClass string) error {
+	return s.createBucket(ctx, name, location, storageClass, true)
+}
+
+func (s *S3Agent) createBucket(ctx context.Context, name, location, storageClass string, infoLogging bool) error {
+	msg := fmt.Sprintf("creating bucket %q", name)
+	if location != "" {
+		msg += fmt.Sprintf(" with location constraint %q", location)
+	}
+	if storageClass != "" {
+		msg += fmt.Sprintf(" with default storage class %q", storageClass)
+	}
 	if infoLogging {
-		logger.Infof("creating bucket %q", name)
+		logger.Info(msg)
 	} else {
-		logger.Debugf("creating bucket %q", name)
+		logger.Debug(msg)
 	}
 
 	input := &s3.CreateBucketInput{
 		Bucket: &name,
 	}
+	if location != "" {
+		input.CreateBucketConfiguration = &s3types.CreateBucketConfiguration{
+			LocationConstraint: s3types.BucketLocationConstraint(location),
+		}
+	}
+	var optFns []func(*s3.Options)
+	if storageClass != "" {
+		// CreateBucketInput has no storage class field; a bucket default
+		// storage class is an RGW extension read from this request header
+		optFns = append(optFns, func(o *s3.Options) {
+			o.APIOptions = append(o.APIOptions, smithyhttp.SetHeaderValue("X-Amz-Storage-Class", storageClass))
+		})
+	}
 
-	_, err := s.Client.CreateBucket(ctx, input)
+	_, err := s.Client.CreateBucket(ctx, input, optFns...)
 	if err != nil {
 		var alreadyExists *s3types.BucketAlreadyExists
 		var alreadyOwned *s3types.BucketAlreadyOwnedByYou

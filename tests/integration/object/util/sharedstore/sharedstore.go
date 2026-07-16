@@ -40,6 +40,10 @@ import (
 	"github.com/rook/rook/tests/integration/object/util/wait4"
 )
 
+// PlacementLocA is a non-default pool placement defined on the shared store's
+// zone for bucket location/placement tests.
+const PlacementLocA = "loc-a"
+
 type Sharedstore struct {
 	adminClient *admin.API
 	snsClient   *sns.Client
@@ -126,6 +130,13 @@ func Create(t *testing.T, k8sh *utils.K8sHelper, installer *installer.CephInstal
 								DataPoolName: storeName + ".rgw.buckets.data.foo",
 							},
 						},
+					},
+					{
+						// the same shared pools back this placement; RADOS
+						// namespacing keeps its data distinct
+						Name:             PlacementLocA,
+						MetadataPoolName: storeName + ".rgw.buckets.index",
+						DataPoolName:     storeName + ".rgw.buckets.data",
 					},
 				},
 			},

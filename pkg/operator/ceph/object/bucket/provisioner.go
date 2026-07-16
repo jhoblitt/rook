@@ -65,13 +65,15 @@ type Provisioner struct {
 }
 
 type additionalConfigSpec struct {
-	maxObjects       *int64
-	maxSize          *int64
-	bucketMaxObjects *int64
-	bucketMaxSize    *int64
-	bucketPolicy     *string
-	bucketLifecycle  *string
-	bucketOwner      *string
+	maxObjects         *int64
+	maxSize            *int64
+	bucketMaxObjects   *int64
+	bucketMaxSize      *int64
+	bucketPolicy       *string
+	bucketLifecycle    *string
+	bucketOwner        *string
+	locationConstraint *string
+	bucketStorageClass *string
 }
 
 var _ apibkt.Provisioner = &Provisioner{}
@@ -120,9 +122,7 @@ func (p Provisioner) Provision(options *apibkt.BucketOptions) (*bktv1alpha1.Obje
 	}
 
 	// create the bucket
-	var bucketExists bool
-	var owner string
-	bucketExists, owner, err = p.bucketExists(p.bucketName)
+	bucketExists, bucketInfo, err := p.bucketExists(p.bucketName)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error creating bucket %q. failed to check if bucket already exists", p.bucketName)
 	}
@@ -130,19 +130,22 @@ func (p Provisioner) Provision(options *apibkt.BucketOptions) (*bktv1alpha1.Obje
 		// if bucket already exists, this returns error: TooManyBuckets because we set the quota
 		// below. If it already exists, assume we are good to go
 		log.NamedDebug(nsName, logger, "creating bucket %q owned by user %q", p.bucketName, p.cephUserName)
-		err = p.s3Agent.CreateBucket(p.clusterInfo.Context, p.bucketName)
+		err = p.s3Agent.CreateBucketWithPlacement(p.clusterInfo.Context, p.bucketName, bucket.locationConstraint, bucket.bucketStorageClass)
 		if err != nil {
 			return nil, errors.Wrapf(err, "error creating bucket %q", p.bucketName)
 		}
-	} else if owner != p.cephUserName {
-		log.NamedDebug(nsName, logger, "bucket %q already exists and is owned by user %q instead of user %q, relinking...", p.bucketName, owner, p.cephUserName)
-
-		err = p.adminOpsClient.LinkBucket(p.clusterInfo.Context, admin.BucketLinkInput{Bucket: p.bucketName, UID: p.cephUserName})
-		if err != nil {
-			return nil, errors.Wrapf(err, "failed to link bucket %q to user %q", p.bucketName, p.cephUserName)
-		}
 	} else {
-		log.NamedDebug(nsName, logger, "bucket %q already exists", p.bucketName)
+		p.logIgnoredPlacement(bucketInfo, bucket)
+		if bucketInfo.Owner != p.cephUserName {
+			log.NamedDebug(nsName, logger, "bucket %q already exists and is owned by user %q instead of user %q, relinking...", p.bucketName, bucketInfo.Owner, p.cephUserName)
+
+			err = p.adminOpsClient.LinkBucket(p.clusterInfo.Context, admin.BucketLinkInput{Bucket: p.bucketName, UID: p.cephUserName})
+			if err != nil {
+				return nil, errors.Wrapf(err, "failed to link bucket %q to user %q", p.bucketName, p.cephUserName)
+			}
+		} else {
+			log.NamedDebug(nsName, logger, "bucket %q already exists", p.bucketName)
+		}
 	}
 
 	// is the bucket owner a provisioner generated user?
@@ -186,9 +189,11 @@ func (p Provisioner) Grant(options *apibkt.BucketOptions) (*bktv1alpha1.ObjectBu
 
 	// check and make sure the bucket exists
 	log.NamedInfo(nsName, logger, "Checking for existing bucket %q", p.bucketName)
-	if exists, _, err := p.bucketExists(p.bucketName); !exists {
+	exists, bucketInfo, err := p.bucketExists(p.bucketName)
+	if !exists {
 		return nil, errors.Wrapf(err, "bucket %s does not exist", p.bucketName)
 	}
+	p.logIgnoredPlacement(bucketInfo, bucket)
 
 	p.accessKeyID, p.secretAccessKey, err = bucket.getUserCreds()
 	if err != nil {
@@ -443,6 +448,16 @@ func (p *Provisioner) initializeCreateOrGrant(bucket *bucket) error {
 	}
 	log.NamedDebug(nsName, logger, "Using user %q for OBC %q", p.cephUserName, obc.Name)
 
+	// the OBC additionalConfig values override the StorageClass parameters
+	bucket.locationConstraint = getLocationConstraint(sc, bucket.additionalConfig)
+	if bucket.locationConstraint != "" {
+		log.NamedDebug(nsName, logger, "Using location constraint %q for OBC %q", bucket.locationConstraint, obc.Name)
+	}
+	bucket.bucketStorageClass = getBucketStorageClass(sc, bucket.additionalConfig)
+	if bucket.bucketStorageClass != "" {
+		log.NamedDebug(nsName, logger, "Using default storage class %q for OBC %q", bucket.bucketStorageClass, obc.Name)
+	}
+
 	return nil
 }
 
@@ -524,6 +539,25 @@ func (p *Provisioner) composeObjectBucket(bucket *bucket) *bktv1alpha1.ObjectBuc
 			Connection: conn,
 		},
 	}
+}
+
+// logIgnoredPlacement notes a requested locationConstraint and/or
+// bucketStorageClass that was not applied because the bucket already exists;
+// RGW bucket placement is immutable after creation.
+func (p *Provisioner) logIgnoredPlacement(bucketInfo *admin.Bucket, bucket *bucket) {
+	requested := []string{}
+	if bucket.locationConstraint != "" {
+		requested = append(requested, fmt.Sprintf("locationConstraint %q", bucket.locationConstraint))
+	}
+	if bucket.bucketStorageClass != "" {
+		requested = append(requested, fmt.Sprintf("bucketStorageClass %q", bucket.bucketStorageClass))
+	}
+	if len(requested) == 0 {
+		return
+	}
+	log.NamedInfo(p.objectContext.NsName(), logger,
+		"bucket %q already exists with placement %q, ignoring requested %s (bucket placement cannot be changed after creation)",
+		bucketInfo.Bucket, bucketInfo.PlacementRule, strings.Join(requested, " and "))
 }
 
 func (p *Provisioner) setObjectContext() error {

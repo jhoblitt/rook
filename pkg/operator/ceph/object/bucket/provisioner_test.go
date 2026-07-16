@@ -590,10 +590,32 @@ func TestProvisioner_additionalConfigSpecFromMap(t *testing.T) {
 		assert.Equal(t, additionalConfigSpec{bucketOwner: &(&struct{ s string }{"foo"}).s}, *spec)
 	})
 
+	t.Run("locationConstraint field should be set", func(t *testing.T) {
+		os.Setenv("ROOK_OBC_ALLOW_ADDITIONAL_CONFIG_FIELDS", "locationConstraint")
+		defer os.Unsetenv("ROOK_OBC_ALLOW_ADDITIONAL_CONFIG_FIELDS")
+		opcontroller.SetObcAllowAdditionalConfigFields()
+		defer opcontroller.SetObcAllowAdditionalConfigFields()
+
+		spec, err := additionalConfigSpecFromMap(map[string]string{"locationConstraint": "my-store:fast"})
+		assert.NoError(t, err)
+		assert.Equal(t, additionalConfigSpec{locationConstraint: &(&struct{ s string }{"my-store:fast"}).s}, *spec)
+	})
+
+	t.Run("bucketStorageClass field should be set", func(t *testing.T) {
+		os.Setenv("ROOK_OBC_ALLOW_ADDITIONAL_CONFIG_FIELDS", "bucketStorageClass")
+		defer os.Unsetenv("ROOK_OBC_ALLOW_ADDITIONAL_CONFIG_FIELDS")
+		opcontroller.SetObcAllowAdditionalConfigFields()
+		defer opcontroller.SetObcAllowAdditionalConfigFields()
+
+		spec, err := additionalConfigSpecFromMap(map[string]string{"bucketStorageClass": "FOO"})
+		assert.NoError(t, err)
+		assert.Equal(t, additionalConfigSpec{bucketStorageClass: &(&struct{ s string }{"FOO"}).s}, *spec)
+	})
+
 	t.Run("fields disallowed by default", func(t *testing.T) {
 		opcontroller.SetObcAllowAdditionalConfigFields()
 
-		for _, configKey := range []string{"bucketMaxObjects", "bucketMaxSize", "bucketPolicy", "bucketLifecycle", "bucketOwner"} {
+		for _, configKey := range []string{"bucketMaxObjects", "bucketMaxSize", "bucketPolicy", "bucketLifecycle", "bucketOwner", "locationConstraint", "bucketStorageClass"} {
 			_, err := additionalConfigSpecFromMap(map[string]string{configKey: "foo"})
 			assert.Error(t, err)
 		}
@@ -605,6 +627,70 @@ func TestProvisioner_additionalConfigSpecFromMap(t *testing.T) {
 		spec, err := additionalConfigSpecFromMap(map[string]string{})
 		assert.NoError(t, err)
 		assert.Equal(t, additionalConfigSpec{}, *spec)
+	})
+}
+
+func TestGetLocationConstraint(t *testing.T) {
+	scWith := func(params map[string]string) *storagev1.StorageClass {
+		return &storagev1.StorageClass{Parameters: params}
+	}
+
+	t.Run("neither set", func(t *testing.T) {
+		assert.Equal(t, "", getLocationConstraint(scWith(nil), &additionalConfigSpec{}))
+	})
+
+	t.Run("StorageClass parameter only", func(t *testing.T) {
+		sc := scWith(map[string]string{"locationConstraint": "my-store:fast"})
+		assert.Equal(t, "my-store:fast", getLocationConstraint(sc, &additionalConfigSpec{}))
+	})
+
+	t.Run("OBC additionalConfig only", func(t *testing.T) {
+		loc := ":fast"
+		assert.Equal(t, ":fast", getLocationConstraint(scWith(nil), &additionalConfigSpec{locationConstraint: &loc}))
+	})
+
+	t.Run("OBC additionalConfig overrides StorageClass parameter", func(t *testing.T) {
+		sc := scWith(map[string]string{"locationConstraint": "my-store:us"})
+		loc := "my-store:eu"
+		assert.Equal(t, "my-store:eu", getLocationConstraint(sc, &additionalConfigSpec{locationConstraint: &loc}))
+	})
+
+	t.Run("empty OBC value overrides StorageClass parameter to unset", func(t *testing.T) {
+		sc := scWith(map[string]string{"locationConstraint": "my-store:us"})
+		loc := ""
+		assert.Equal(t, "", getLocationConstraint(sc, &additionalConfigSpec{locationConstraint: &loc}))
+	})
+}
+
+func TestGetBucketStorageClass(t *testing.T) {
+	scWith := func(params map[string]string) *storagev1.StorageClass {
+		return &storagev1.StorageClass{Parameters: params}
+	}
+
+	t.Run("neither set", func(t *testing.T) {
+		assert.Equal(t, "", getBucketStorageClass(scWith(nil), &additionalConfigSpec{}))
+	})
+
+	t.Run("StorageClass parameter only", func(t *testing.T) {
+		sc := scWith(map[string]string{"bucketStorageClass": "FOO"})
+		assert.Equal(t, "FOO", getBucketStorageClass(sc, &additionalConfigSpec{}))
+	})
+
+	t.Run("OBC additionalConfig only", func(t *testing.T) {
+		class := "FOO"
+		assert.Equal(t, "FOO", getBucketStorageClass(scWith(nil), &additionalConfigSpec{bucketStorageClass: &class}))
+	})
+
+	t.Run("OBC additionalConfig overrides StorageClass parameter", func(t *testing.T) {
+		sc := scWith(map[string]string{"bucketStorageClass": "FOO"})
+		class := "BAR"
+		assert.Equal(t, "BAR", getBucketStorageClass(sc, &additionalConfigSpec{bucketStorageClass: &class}))
+	})
+
+	t.Run("empty OBC value overrides StorageClass parameter to unset", func(t *testing.T) {
+		sc := scWith(map[string]string{"bucketStorageClass": "FOO"})
+		class := ""
+		assert.Equal(t, "", getBucketStorageClass(sc, &additionalConfigSpec{bucketStorageClass: &class}))
 	})
 }
 

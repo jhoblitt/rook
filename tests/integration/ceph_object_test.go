@@ -44,6 +44,7 @@ import (
 	"github.com/rook/rook/tests/framework/clients"
 	"github.com/rook/rook/tests/framework/installer"
 	"github.com/rook/rook/tests/framework/utils"
+	bucketlocation "github.com/rook/rook/tests/integration/object/bucket/location"
 	bucketowner "github.com/rook/rook/tests/integration/object/bucket/owner"
 	bucketpolicy "github.com/rook/rook/tests/integration/object/bucket/policy"
 	bucketquota "github.com/rook/rook/tests/integration/object/bucket/quota"
@@ -215,6 +216,7 @@ func runObjectE2ETest(helper *clients.TestClient, k8sh *utils.K8sHelper, install
 	testObjectStoreOperations(s, helper, k8sh, settings, storeName, swiftAndKeystone)
 
 	sharedObjectStore := sharedstore.Create(s.T(), k8sh, installer, tlsEnable, settings.Namespace, "sharedstore", 1,
+		bucketlocation.Namespace,
 		bucketowner.Namespace,
 		bucketpolicy.Namespace,
 		bucketquota.Namespace,
@@ -228,6 +230,7 @@ func runObjectE2ETest(helper *clients.TestClient, k8sh *utils.K8sHelper, install
 	)
 	defer sharedObjectStore.Destroy()
 
+	bucketlocation.TestObjectBucketClaimLocationConstraint(s.T(), k8sh, sharedObjectStore)
 	bucketowner.TestObjectBucketClaimBucketOwner(s.T(), k8sh, sharedObjectStore)
 	bucketpolicy.TestObjectBucketClaimPolicy(s.T(), k8sh, sharedObjectStore)
 	bucketquota.TestObjectBucketClaimQuota(s.T(), k8sh, sharedObjectStore)

@@ -32,6 +32,7 @@ must not collide with std-lib package names (no `io`, no `http`).
 
 | test package | operator package | covers |
 |---|---|---|
+| `bucket/location` | `object/bucket` | OBC/SC `locationConstraint`/`bucketStorageClass` bucket placement |
 | `bucket/owner` | `object/bucket` | OBC `bucketOwner` handling |
 | `bucket/policy` | `object/bucket` | OBC bucketPolicy management |
 | `bucket/quota` | `object/bucket` | OBC maxObjects user quota + bucketMaxObjects/bucketMaxSize bucket quota |

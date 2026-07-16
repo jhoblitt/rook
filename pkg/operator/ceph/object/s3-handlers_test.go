@@ -17,7 +17,10 @@ limitations under the License.
 package object
 
 import (
+	"context"
+	"io"
 	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -119,5 +122,75 @@ func TestNewS3Agent(t *testing.T) {
 		s3Agent, err := NewS3Agent(accessKey, secretKey, ep, false, nil, true, nil)
 		assert.NoError(t, err)
 		assert.Equal(t, "https://rook-ceph-rgw-store.test-ns.svc:443", *s3Agent.Client.Options().BaseEndpoint)
+	})
+}
+
+type capturingRoundTripper struct {
+	req  *http.Request
+	body []byte
+}
+
+func (rt *capturingRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
+	rt.req = req
+	if req.Body != nil {
+		rt.body, _ = io.ReadAll(req.Body)
+	}
+	return &http.Response{
+		StatusCode: 200,
+		Header:     http.Header{},
+		Body:       io.NopCloser(strings.NewReader("")),
+	}, nil
+}
+
+func TestS3AgentCreateBucket(t *testing.T) {
+	newAgent := func(t *testing.T, rt http.RoundTripper) *S3Agent {
+		s3Agent, err := NewS3Agent("accessKey", "secretKey", "endpoint", false, nil, false, &http.Client{Transport: rt})
+		assert.NoError(t, err)
+		return s3Agent
+	}
+
+	t.Run("CreateBucket sends no CreateBucketConfiguration", func(t *testing.T) {
+		rt := &capturingRoundTripper{}
+		err := newAgent(t, rt).CreateBucket(context.TODO(), "bkt")
+		assert.NoError(t, err)
+		assert.Equal(t, http.MethodPut, rt.req.Method)
+		assert.Contains(t, rt.req.URL.Path, "/bkt")
+		assert.NotContains(t, string(rt.body), "CreateBucketConfiguration")
+	})
+
+	t.Run("CreateBucketWithPlacement sends the location verbatim", func(t *testing.T) {
+		rt := &capturingRoundTripper{}
+		err := newAgent(t, rt).CreateBucketWithPlacement(context.TODO(), "bkt", "my-store:loc-a", "")
+		assert.NoError(t, err)
+		assert.Equal(t, http.MethodPut, rt.req.Method)
+		assert.Contains(t, rt.req.URL.Path, "/bkt")
+		assert.Contains(t, string(rt.body), "<LocationConstraint>my-store:loc-a</LocationConstraint>")
+		assert.Empty(t, rt.req.Header.Get("X-Amz-Storage-Class"))
+	})
+
+	t.Run("CreateBucketWithPlacement sends the storage class header", func(t *testing.T) {
+		rt := &capturingRoundTripper{}
+		err := newAgent(t, rt).CreateBucketWithPlacement(context.TODO(), "bkt", "my-store:loc-a", "FOO")
+		assert.NoError(t, err)
+		assert.Contains(t, string(rt.body), "<LocationConstraint>my-store:loc-a</LocationConstraint>")
+		assert.Equal(t, "FOO", rt.req.Header.Get("X-Amz-Storage-Class"))
+		// the header must be part of the SigV4 signature or RGW rejects it
+		assert.Contains(t, rt.req.Header.Get("Authorization"), "x-amz-storage-class")
+	})
+
+	t.Run("storage class header without a location constraint", func(t *testing.T) {
+		rt := &capturingRoundTripper{}
+		err := newAgent(t, rt).CreateBucketWithPlacement(context.TODO(), "bkt", "", "FOO")
+		assert.NoError(t, err)
+		assert.NotContains(t, string(rt.body), "CreateBucketConfiguration")
+		assert.Equal(t, "FOO", rt.req.Header.Get("X-Amz-Storage-Class"))
+	})
+
+	t.Run("empty location and storage class behave like CreateBucket", func(t *testing.T) {
+		rt := &capturingRoundTripper{}
+		err := newAgent(t, rt).CreateBucketWithPlacement(context.TODO(), "bkt", "", "")
+		assert.NoError(t, err)
+		assert.NotContains(t, string(rt.body), "CreateBucketConfiguration")
+		assert.Empty(t, rt.req.Header.Get("X-Amz-Storage-Class"))
 	})
 }
