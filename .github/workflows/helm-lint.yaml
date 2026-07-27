@@ -33,3 +33,6 @@ jobs:
 
       - name: Lint the helm charts
         run: make lint.helm
+
+      - name: Unit test the helm charts
+        run: make test.helm
