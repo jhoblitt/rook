@@ -111,6 +111,44 @@ are personally willing to take on the risks.
 OBC `additionalConfig` fields can be enabled and disabled using the `rook-ceph-operator-config`
 configmap value `ROOK_OBC_ALLOW_ADDITIONAL_CONFIG_FIELDS`.
 
+### Strict bucketOwner mode (experimental)
+
+By default, any OBC allowed to set `bucketOwner` can name an arbitrary rgw user, and the OBC's
+credentials secret receives that user's S3 keys. That effectively lets anyone who can create an OBC
+read the S3 credentials of any rgw user on the object store.
+
+Setting `ROOK_OBC_STRICT_BUCKET_OWNER: "true"` in the `rook-ceph-operator-config` configmap
+enables a strict mode that changes OBC provisioning behavior:
+
+* Every OBC must set `additionalConfig.bucketOwner` (the field is implicitly allowed, without an
+    entry in `ROOK_OBC_ALLOW_ADDITIONAL_CONFIG_FIELDS`). The provisioner no longer generates
+    per-OBC rgw users.
+* `bucketOwner` must be the name of a `CephObjectStoreUser` in the same namespace as the OBC, and
+    that user must belong to the same object store as the OBC's storage class. For an OBC in a
+    namespace other than the Ceph cluster namespace, the `CephObjectStoreUser` must set
+    `spec.clusterNamespace`.
+* OBC credentials secrets never contain S3 keys. Applications read credentials from the
+    referenced `CephObjectStoreUser`'s own secret (`rook-ceph-object-user-<store>-<user>`) instead.
+    The OBC configmap still provides the bucket endpoint. (The OBC secret object itself still
+    exists, but empty: the bucket provisioning library unconditionally creates it.)
+* S3 keys handed out before strict mode was enabled are revoked as OBCs are reconciled: a
+    conforming OBC's secret is deleted and recreated without keys, and a violating OBC's secret is
+    deleted outright.
+* When an OBC created before strict mode transitions to an explicit `bucketOwner`, its bucket is
+    relinked to that owner and the rgw user the provisioner had generated for the OBC is removed,
+    revoking that user's keys. (Exception: for brownfield OBCs — pre-existing buckets named by the
+    storage class — the previously generated user is not removed automatically and should be
+    cleaned up manually.)
+* An OBC that violates the policy fails provisioning.
+* Deleting a `CephObjectStoreUser` is blocked while any OBC references it via `bucketOwner`;
+    delete the referencing OBCs first.
+
+Enabling strict mode on a cluster with existing OBCs breaks every OBC that does not conform, and
+removes the S3 keys from all OBC credentials secrets as the OBCs are reconciled. Before enabling
+it, create a `CephObjectStoreUser` for each OBC's owner in the OBC's namespace, set
+`additionalConfig.bucketOwner` on every OBC, and switch applications to consume the
+`CephObjectStoreUser` secret.
+
 ### OBC Custom Resource after Bucket Provisioning
 
 ```yaml

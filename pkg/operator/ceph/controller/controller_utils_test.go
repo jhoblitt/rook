@@ -342,3 +342,30 @@ func TestObcAllowAdditionalConfigFields(t *testing.T) {
 		})
 	}
 }
+
+func TestSetObcStrictBucketOwner(t *testing.T) {
+	tests := []struct {
+		name     string
+		value    string
+		expected bool
+	}{
+		{"not set", "<notset>", false},
+		{"set to true", "true", true},
+		{"set to false", "false", false},
+		{"set to 1", "1", true},
+		{"invalid value", "banana", false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.value != "<notset>" {
+				t.Setenv("ROOK_OBC_STRICT_BUCKET_OWNER", tt.value)
+			}
+			SetObcStrictBucketOwner()
+			t.Cleanup(func() {
+				os.Unsetenv("ROOK_OBC_STRICT_BUCKET_OWNER")
+				SetObcStrictBucketOwner()
+			})
+			assert.Equal(t, tt.expected, ObcStrictBucketOwner())
+		})
+	}
+}

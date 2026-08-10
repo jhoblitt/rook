@@ -128,6 +128,7 @@ func (r *ReconcileConfig) reconcile(request reconcile.Request) (reconcile.Result
 	opcontroller.SetEnforceHostNetwork()
 	opcontroller.SetRevisionHistoryLimit()
 	opcontroller.SetObcAllowAdditionalConfigFields()
+	opcontroller.SetObcStrictBucketOwner()
 
 	logger.Infof("%s done reconciling", controllerName)
 	return reconcile.Result{}, nil

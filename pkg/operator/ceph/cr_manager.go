@@ -19,6 +19,7 @@ package operator
 import (
 	"context"
 
+	bktv1alpha1 "github.com/kube-object-storage/lib-bucket-provisioner/pkg/apis/objectbucket.io/v1alpha1"
 	"github.com/pkg/errors"
 	"github.com/rook/rook/pkg/clusterd"
 	"github.com/rook/rook/pkg/operator/ceph/client"
@@ -61,6 +62,7 @@ import (
 var resourcesSchemeFuncs = []func(*runtime.Scheme) error{
 	clientgoscheme.AddToScheme,
 	cephv1.AddToScheme,
+	bktv1alpha1.AddToScheme,
 }
 
 // EnableMachineDisruptionBudget checks whether machine disruption budget is enabled
