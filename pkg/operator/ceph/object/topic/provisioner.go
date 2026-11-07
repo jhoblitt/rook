@@ -138,20 +138,6 @@ func amqpAckLevel(nsName types.NamespacedName, ackLevel string) string {
 	return ackLevel
 }
 
-// logTopicEndpoint reports the push endpoint a CephBucketTopic is being provisioned
-// with. The URI can carry a password in its userinfo, so it is logged redacted; one
-// that does not parse cannot be redacted and is reported by length instead.
-func logTopicEndpoint(nsName types.NamespacedName, rawURI string) {
-	uri, err := url.Parse(rawURI)
-	if err != nil {
-		log.NamedWarning(nsName, logger, "creating CephBucketTopic %q with an endpoint that is not a valid URI (%d bytes): %s", nsName, len(rawURI), urlParseReason(err))
-		return
-	}
-
-	// do not log passphrases, if set
-	log.NamedInfo(nsName, logger, "creating CephBucketTopic %q with endpoint %q", nsName, uri.Redacted())
-}
-
 // urlParseReason returns why url.Parse rejected a URI, without the URI itself:
 // url.Parse fails with a *url.Error, whose message formats the raw URI it was
 // given, and that URI can carry a passphrase.
@@ -172,14 +158,12 @@ func createTopicAttributes(p provisioner, topic *cephv1.CephBucketTopic) (map[st
 	attr["OpaqueData"] = topic.Spec.OpaqueData
 	attr["persistent"] = strconv.FormatBool(topic.Spec.Persistent)
 	if topic.Spec.Endpoint.AMQP != nil {
-		logTopicEndpoint(nsName, topic.Spec.Endpoint.AMQP.URI)
 		attr["push-endpoint"] = topic.Spec.Endpoint.AMQP.URI
 		attr["amqp-exchange"] = topic.Spec.Endpoint.AMQP.Exchange
 		attr["amqp-ack-level"] = amqpAckLevel(nsName, topic.Spec.Endpoint.AMQP.AckLevel)
 		attr["verify-ssl"] = strconv.FormatBool(!topic.Spec.Endpoint.AMQP.DisableVerifySSL)
 	}
 	if topic.Spec.Endpoint.HTTP != nil {
-		logTopicEndpoint(nsName, topic.Spec.Endpoint.HTTP.URI)
 		attr["push-endpoint"] = topic.Spec.Endpoint.HTTP.URI
 		attr["verify-ssl"] = strconv.FormatBool(!topic.Spec.Endpoint.HTTP.DisableVerifySSL)
 		attr["cloudevents"] = strconv.FormatBool(topic.Spec.Endpoint.HTTP.SendCloudEvents)
