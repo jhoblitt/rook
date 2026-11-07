@@ -158,12 +158,14 @@ func createTopicAttributes(p provisioner, topic *cephv1.CephBucketTopic) (map[st
 	attr["OpaqueData"] = topic.Spec.OpaqueData
 	attr["persistent"] = strconv.FormatBool(topic.Spec.Persistent)
 	if topic.Spec.Endpoint.AMQP != nil {
+		log.NamedInfo(nsName, logger, "creating CephBucketTopic %q with endpoint %q", nsName, topic.Spec.Endpoint.AMQP.URI)
 		attr["push-endpoint"] = topic.Spec.Endpoint.AMQP.URI
 		attr["amqp-exchange"] = topic.Spec.Endpoint.AMQP.Exchange
 		attr["amqp-ack-level"] = amqpAckLevel(nsName, topic.Spec.Endpoint.AMQP.AckLevel)
 		attr["verify-ssl"] = strconv.FormatBool(!topic.Spec.Endpoint.AMQP.DisableVerifySSL)
 	}
 	if topic.Spec.Endpoint.HTTP != nil {
+		log.NamedInfo(nsName, logger, "creating CephBucketTopic %q with endpoint %q", nsName, topic.Spec.Endpoint.HTTP.URI)
 		attr["push-endpoint"] = topic.Spec.Endpoint.HTTP.URI
 		attr["verify-ssl"] = strconv.FormatBool(!topic.Spec.Endpoint.HTTP.DisableVerifySSL)
 		attr["cloudevents"] = strconv.FormatBool(topic.Spec.Endpoint.HTTP.SendCloudEvents)
