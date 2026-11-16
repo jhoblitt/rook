@@ -1,5 +1,5 @@
-# gh-aw-metadata: {"schema_version":"v4","frontmatter_hash":"df3da8b94f9364162313e15f2aa87d1e03dc4be08f7e27882710d41134a1a4b7","body_hash":"42aa7cc056eeafdb8984d4c8c181eeb2667d40713e709208dca4b0ba7b8c89f1","compiler_version":"v1.0.1","strict":true,"agent_id":"claude","agent_model":"copilot/claude-opus-5.5","engine_versions":{"claude":"2.1.310"}}
-# gh-aw-manifest: {"version":1,"secrets":["COPILOT_GITHUB_TOKEN","GH_AW_DEFAULT_OTLP_ENDPOINT","GH_AW_DEFAULT_OTLP_HEADERS","GH_AW_GITHUB_MCP_SERVER_TOKEN","GH_AW_GITHUB_TOKEN","GITHUB_TOKEN"],"actions":[{"repo":"actions/checkout","sha":"3d3c42e5aac5ba805825da76410c181273ba90b1","version":"v7.0.1"},{"repo":"actions/download-artifact","sha":"9000827ccba6bdab643e8b6fd33ac0654aef8333","version":"v8.0.2"},{"repo":"actions/github-script","sha":"3a2844b7e9c422d3c10d287c895573f7108da1b3","version":"v9.0.0"},{"repo":"actions/setup-node","sha":"949feb2413d6458794dcd2491c4babbbce0c15c1","version":"v7.1.0"},{"repo":"actions/upload-artifact","sha":"cf430e030ddbb5b0abf93d22962f4752f3646cd9","version":"v7.0.2"},{"repo":"github/gh-aw-actions/setup","sha":"221ba4f4319de6b8e809d1a15528b3ae6a818aa5","version":"v1.0.1"}],"plugins":["jhoblitt/rook-claude/plugins/rook-maintainer@b9876c93b943ab32b3f5b86d3a4319264998bdf5"],"containers":[{"image":"ghcr.io/github/gh-aw-firewall/agent:0.29.0","digest":"sha256:b14bd399376180b5649a9324be3b50fbfc82bfe8f0c80045840416b5a4e65b96","pinned_image":"ghcr.io/github/gh-aw-firewall/agent:0.29.0@sha256:b14bd399376180b5649a9324be3b50fbfc82bfe8f0c80045840416b5a4e65b96"},{"image":"ghcr.io/github/gh-aw-firewall/api-proxy:0.29.0","digest":"sha256:baff00b856a4bdc93bce134928c70af3d3492f2e518757115042040674d56b0b","pinned_image":"ghcr.io/github/gh-aw-firewall/api-proxy:0.29.0@sha256:baff00b856a4bdc93bce134928c70af3d3492f2e518757115042040674d56b0b"},{"image":"ghcr.io/github/gh-aw-firewall/cli-proxy:0.29.0","digest":"sha256:087a8e4efff8ac62d46e106cd22005c002822b1481fc233097799511be353b5d","pinned_image":"ghcr.io/github/gh-aw-firewall/cli-proxy:0.29.0@sha256:087a8e4efff8ac62d46e106cd22005c002822b1481fc233097799511be353b5d"},{"image":"ghcr.io/github/gh-aw-firewall/squid:0.29.0","digest":"sha256:6e0cbf7f980beb78b5461563a8164f6439ca959bc93733d5a6b52972e523ed50","pinned_image":"ghcr.io/github/gh-aw-firewall/squid:0.29.0@sha256:6e0cbf7f980beb78b5461563a8164f6439ca959bc93733d5a6b52972e523ed50"},{"image":"ghcr.io/github/gh-aw-mcpg:v0.5.0","digest":"sha256:d3544a4222e7efeeeb38669d8a1af0c72691c55b8f6506b15aa5920f7f31b7bc","pinned_image":"ghcr.io/github/gh-aw-mcpg:v0.5.0@sha256:d3544a4222e7efeeeb38669d8a1af0c72691c55b8f6506b15aa5920f7f31b7bc"},{"image":"ghcr.io/github/gh-aw-node","digest":"sha256:2c2ea524e648b91c8333ce246e3838fcf5b19ac70e45baac1a51b9207299749f","pinned_image":"ghcr.io/github/gh-aw-node@sha256:2c2ea524e648b91c8333ce246e3838fcf5b19ac70e45baac1a51b9207299749f"},{"image":"ghcr.io/github/github-mcp-server:v2.0.3","digest":"sha256:250bc6ce70788207608ef74cef4397230ff2e8481218da74d6093e4bd9101132","pinned_image":"ghcr.io/github/github-mcp-server:v2.0.3@sha256:250bc6ce70788207608ef74cef4397230ff2e8481218da74d6093e4bd9101132"}],"has_pull_request_target":true,"mcp_servers":[{"name":"safeoutputs","tools":["noop","post_review","report_incomplete","report_missing_data","report_missing_tool","security_gate"]}],"threat_detection":{"mode":"enabled"},"admission":false}
+# gh-aw-metadata: {"schema_version":"v4","frontmatter_hash":"f6cf0d1f694a4d6e49bbc7440f508ad0183ee22ecf25f1a55de523820074e934","body_hash":"c60bdf04bd2cb4c8d317e237a9d189a146f5f5ec454d32a7ef6a9145f2512d1a","compiler_version":"v1.0.1","strict":true,"agent_id":"claude","agent_model":"copilot/claude-opus-5.5","engine_versions":{"claude":"2.1.310"}}
+# gh-aw-manifest: {"version":1,"secrets":["COPILOT_GITHUB_TOKEN","GH_AW_DEFAULT_OTLP_ENDPOINT","GH_AW_DEFAULT_OTLP_HEADERS","GH_AW_GITHUB_MCP_SERVER_TOKEN","GH_AW_GITHUB_TOKEN","GITHUB_TOKEN"],"actions":[{"repo":"actions/checkout","sha":"3d3c42e5aac5ba805825da76410c181273ba90b1","version":"v7.0.1"},{"repo":"actions/download-artifact","sha":"9000827ccba6bdab643e8b6fd33ac0654aef8333","version":"v8.0.2"},{"repo":"actions/github-script","sha":"3a2844b7e9c422d3c10d287c895573f7108da1b3","version":"v9.0.0"},{"repo":"actions/setup-node","sha":"949feb2413d6458794dcd2491c4babbbce0c15c1","version":"v7.1.0"},{"repo":"actions/upload-artifact","sha":"cf430e030ddbb5b0abf93d22962f4752f3646cd9","version":"v7.0.2"},{"repo":"github/gh-aw-actions/setup","sha":"221ba4f4319de6b8e809d1a15528b3ae6a818aa5","version":"v1.0.1"}],"plugins":["jhoblitt/rook-claude/plugins/rook-maintainer@12fee62d531d9f59844312cfa1da3ab1663f99f5"],"containers":[{"image":"ghcr.io/github/gh-aw-firewall/agent:0.29.0","digest":"sha256:b14bd399376180b5649a9324be3b50fbfc82bfe8f0c80045840416b5a4e65b96","pinned_image":"ghcr.io/github/gh-aw-firewall/agent:0.29.0@sha256:b14bd399376180b5649a9324be3b50fbfc82bfe8f0c80045840416b5a4e65b96"},{"image":"ghcr.io/github/gh-aw-firewall/api-proxy:0.29.0","digest":"sha256:baff00b856a4bdc93bce134928c70af3d3492f2e518757115042040674d56b0b","pinned_image":"ghcr.io/github/gh-aw-firewall/api-proxy:0.29.0@sha256:baff00b856a4bdc93bce134928c70af3d3492f2e518757115042040674d56b0b"},{"image":"ghcr.io/github/gh-aw-firewall/cli-proxy:0.29.0","digest":"sha256:087a8e4efff8ac62d46e106cd22005c002822b1481fc233097799511be353b5d","pinned_image":"ghcr.io/github/gh-aw-firewall/cli-proxy:0.29.0@sha256:087a8e4efff8ac62d46e106cd22005c002822b1481fc233097799511be353b5d"},{"image":"ghcr.io/github/gh-aw-firewall/squid:0.29.0","digest":"sha256:6e0cbf7f980beb78b5461563a8164f6439ca959bc93733d5a6b52972e523ed50","pinned_image":"ghcr.io/github/gh-aw-firewall/squid:0.29.0@sha256:6e0cbf7f980beb78b5461563a8164f6439ca959bc93733d5a6b52972e523ed50"},{"image":"ghcr.io/github/gh-aw-mcpg:v0.5.0","digest":"sha256:d3544a4222e7efeeeb38669d8a1af0c72691c55b8f6506b15aa5920f7f31b7bc","pinned_image":"ghcr.io/github/gh-aw-mcpg:v0.5.0@sha256:d3544a4222e7efeeeb38669d8a1af0c72691c55b8f6506b15aa5920f7f31b7bc"},{"image":"ghcr.io/github/gh-aw-node","digest":"sha256:2c2ea524e648b91c8333ce246e3838fcf5b19ac70e45baac1a51b9207299749f","pinned_image":"ghcr.io/github/gh-aw-node@sha256:2c2ea524e648b91c8333ce246e3838fcf5b19ac70e45baac1a51b9207299749f"},{"image":"ghcr.io/github/github-mcp-server:v2.0.3","digest":"sha256:250bc6ce70788207608ef74cef4397230ff2e8481218da74d6093e4bd9101132","pinned_image":"ghcr.io/github/github-mcp-server:v2.0.3@sha256:250bc6ce70788207608ef74cef4397230ff2e8481218da74d6093e4bd9101132"}],"has_pull_request_target":true,"mcp_servers":[{"name":"safeoutputs","tools":["post_review"]}],"threat_detection":{"mode":"enabled"},"admission":false}
 # This file was automatically generated by gh-aw (v1.0.1). DO NOT EDIT. To debug this workflow, load the skill at https://github.com/github/gh-aw/blob/main/debug.md
 #
 #    ___                   _   _
@@ -23,7 +23,7 @@
 #
 # For more information: https://github.github.com/gh-aw/introduction/overview/
 #
-# Spike - run the rook-maintainer rook-code-review skill on pull requests
+# Run the rook-maintainer rook-code-review skill on pull requests
 #
 # Secrets used:
 #   - COPILOT_GITHUB_TOKEN
@@ -52,6 +52,10 @@
 
 name: "rook code review"
 on:
+  issue_comment:
+    types:
+      - created
+      - edited
   pull_request_target:
     types:
       - opened
@@ -62,8 +66,8 @@ on:
 permissions: {}
 
 concurrency:
-  group: "gh-aw-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref || github.run_id }}"
   cancel-in-progress: true
+  group: gh-aw-${{ github.workflow }}-${{ github.event_name == 'pull_request_target' && format('pr-{0}', github.event.pull_request.number) || format('comment-{0}', github.event.comment.id) }}
 
 run-name: "rook code review"
 
@@ -79,14 +83,14 @@ jobs:
   activation:
     name: activation
     needs: pre_activation
-    if: >
-      needs.pre_activation.outputs.activated == 'true' && (github.event.pull_request.head.repo.full_name == 'batmanuel-sandbox/rook2')
+    if: "needs.pre_activation.outputs.activated == 'true' && ((github.event_name == 'issue_comment') && (github.event_name == 'issue_comment' && (startsWith(github.event.comment.body, '/review ') || startsWith(github.event.comment.body, '/review\n') || startsWith(github.event.comment.body, '/review\r') || github.event.comment.body == '/review') && github.event.issue.pull_request != null) || !(github.event_name == 'issue_comment'))"
     runs-on: ubuntu-slim
     # Permissions for the activation job (workflow permissions default to none).
     permissions:
       actions: read
       contents: read
       issues: write
+      pull-requests: write
     env:
       GH_AW_MAX_DAILY_AI_CREDITS: ${{ vars.GH_AW_DEFAULT_MAX_DAILY_AI_CREDITS || '5000' }}
       GH_AW_RUNTIME_FEATURES: ${{ vars.GH_AW_RUNTIME_FEATURES }}
@@ -109,6 +113,7 @@ jobs:
       setup-parent-span-id: ${{ steps.setup.outputs.parent-span-id || steps.setup.outputs.span-id }}
       setup-span-id: ${{ steps.setup.outputs.span-id }}
       setup-trace-id: ${{ steps.setup.outputs.trace-id }}
+      slash_command: ${{ needs.pre_activation.outputs.matched_command }}
       stale_lock_file_failed: ${{ steps.check-lock-file.outputs.stale_lock_file_failed == 'true' }}
       text: ${{ steps.sanitized.outputs.text }}
       title: ${{ steps.sanitized.outputs.title }}
@@ -168,7 +173,7 @@ jobs:
         if: ${{ env.GH_AW_ADMISSION_RESULT != 'admitted' && env.GH_AW_MAX_DAILY_AI_CREDITS != '' }}
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
-          GH_AW_HAS_SLASH_COMMAND: "false"
+          GH_AW_HAS_SLASH_COMMAND: "true"
           GH_AW_HAS_LABEL_COMMAND: "false"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -188,7 +193,7 @@ jobs:
           GH_AW_WORKFLOW_ID: "rook-review"
           GH_AW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GH_AW_WORKFLOW_DISPATCH_AW_CONTEXT: ${{ github.event.inputs.aw_context || '' }}
-          GH_AW_HAS_SLASH_COMMAND: "false"
+          GH_AW_HAS_SLASH_COMMAND: "true"
           GH_AW_HAS_LABEL_COMMAND: "false"
           GH_AW_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_AW_MAX_DAILY_AI_CREDITS: ${{ vars.GH_AW_DEFAULT_MAX_DAILY_AI_CREDITS || '5000' }}
@@ -212,6 +217,21 @@ jobs:
           overwrite: true
           if-no-files-found: ignore
           retention-days: ${{ vars.GH_AW_DEFAULT_ARTIFACT_RETENTION_DAYS || '3' }}
+      - name: Add eyes reaction for immediate feedback
+        id: react
+        if: github.event_name == 'issues' || github.event_name == 'issue_comment' || github.event_name == 'pull_request_review_comment' || github.event_name == 'discussion' || github.event_name == 'discussion_comment' || github.event_name == 'pull_request' && github.event.pull_request.head.repo.id == github.repository_id
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          GH_AW_REACTION: "eyes"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const path = require('path');
+            const actionsDir = path.join(process.env.RUNNER_TEMP, 'gh-aw', 'actions');
+            const { setupGlobals } = require(path.join(actionsDir, 'setup_globals.cjs'));
+            setupGlobals(core, github, context, exec, io, getOctokit);
+            const { main } = require(path.join(actionsDir, 'add_reaction.cjs'));
+            await main();
       - name: Validate COPILOT_GITHUB_TOKEN secret
         id: validate-secret
         run: bash "${RUNNER_TEMP}/gh-aw/actions/validate_multi_secret.sh" COPILOT_GITHUB_TOKEN 'Claude Code' https://github.github.com/gh-aw/reference/engines/#github-copilot-default
@@ -262,7 +282,7 @@ jobs:
         env:
           GH_AW_COMPILED_VERSION: "v1.0.1"
           GH_AW_HAS_SAFE_OUTPUTS: "true"
-          GH_AW_BLOCKED_VERSION_REPORT_AS_ISSUE: "true"
+          GH_AW_BLOCKED_VERSION_REPORT_AS_ISSUE: "false"
           GH_AW_WORKFLOW_NAME: "rook code review"
         with:
           script: |
@@ -294,20 +314,21 @@ jobs:
           GH_AW_ACTIONS_DIR: ${{ runner.temp }}/gh-aw/actions
           GH_AW_PROMPT: ${{ runner.temp }}/gh-aw/aw-prompts/prompt.txt
           GH_AW_SAFE_OUTPUTS: ${{ runner.temp }}/gh-aw/safeoutputs/outputs.jsonl
-          GH_AW_PROMPT_CONFIG: "{\"items\":[{\"content_env\":\"GH_AW_PROMPT_CONTENT_0000\"},{\"file\":\"xpia.md\"},{\"file\":\"temp_folder_prompt.md\"},{\"file\":\"markdown.md\"},{\"file\":\"safe_outputs_mcp_transport_prompt.md\"},{\"file\":\"safe_outputs_prompt.md\"},{\"content_env\":\"GH_AW_PROMPT_CONTENT_0001\"},{\"content_env\":\"GH_AW_PROMPT_CONTENT_0002\"},{\"file\":\"mcp_cli_tools_with_safeoutputs_prompt.md\"},{\"content_env\":\"GH_AW_PROMPT_CONTENT_0003\"},{\"file\":\"cli_proxy_with_safeoutputs_prompt.md\"},{\"content_env\":\"GH_AW_PROMPT_CONTENT_0004\"},{\"content_env\":\"GH_AW_PROMPT_CONTENT_0005\"}],\"system_item_count\":12}"
+          GH_AW_PROMPT_CONFIG: "{\"items\":[{\"content_env\":\"GH_AW_PROMPT_CONTENT_0000\"},{\"file\":\"xpia.md\"},{\"file\":\"temp_folder_prompt.md\"},{\"file\":\"markdown.md\"},{\"file\":\"safe_outputs_mcp_transport_prompt.md\"},{\"file\":\"safe_outputs_prompt.md\"},{\"content_env\":\"GH_AW_PROMPT_CONTENT_0001\"},{\"content_env\":\"GH_AW_PROMPT_CONTENT_0002\"},{\"file\":\"mcp_cli_tools_with_safeoutputs_prompt.md\"},{\"content_env\":\"GH_AW_PROMPT_CONTENT_0003\"},{\"file\":\"cli_proxy_with_safeoutputs_prompt.md\"},{\"file\":\"pr_context_prompt.md\",\"condition_env\":\"GH_AW_INCLUDE_PR_CONTEXT\"},{\"content_env\":\"GH_AW_PROMPT_CONTENT_0004\"},{\"content_env\":\"GH_AW_PROMPT_CONTENT_0005\"}],\"system_item_count\":13}"
           GH_AW_EXPR_76DF9333: ${{ github.event.pull_request.number || (fromJSON(steps.generate_aw_info.outputs.aw_context || '{}').item_type == 'pull_request' && fromJSON(steps.generate_aw_info.outputs.aw_context || '{}').item_number) }}
           GH_AW_EXPR_77C1A4D2: ${{ github.event.comment.id || fromJSON(steps.generate_aw_info.outputs.aw_context || '{}').comment_id }}
           GH_AW_EXPR_7C248226: ${{ github.event.issue.number || (fromJSON(steps.generate_aw_info.outputs.aw_context || '{}').item_type == 'issue' && fromJSON(steps.generate_aw_info.outputs.aw_context || '{}').item_number) }}
+          GH_AW_EXPR_AE61BB68: ${{ github.event.pull_request.number || github.event.issue.number }}
           GH_AW_EXPR_C19C384F: ${{ github.event.discussion.number || (fromJSON(steps.generate_aw_info.outputs.aw_context || '{}').item_type == 'discussion' && fromJSON(steps.generate_aw_info.outputs.aw_context || '{}').item_number) }}
           GH_AW_GITHUB_ACTOR: ${{ github.actor }}
-          GH_AW_GITHUB_EVENT_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
           GH_AW_GITHUB_REPOSITORY: ${{ github.repository }}
           GH_AW_GITHUB_RUN_ID: ${{ github.run_id }}
           GH_AW_GITHUB_WORKSPACE: ${{ github.workspace }}
+          GH_AW_INCLUDE_PR_CONTEXT: ${{ (github.event_name == 'issue_comment' && github.event.issue.pull_request != null) || github.event_name == 'pull_request_review_comment' || github.event_name == 'pull_request_review' }}
           GH_AW_PROMPT_CONTENT_0000: "<system>\n"
-          GH_AW_PROMPT_CONTENT_0001: "<safe-output-tools>\nTools: report_missing_tool, report_missing_data, noop(max:2), post_review, security_gate\n"
+          GH_AW_PROMPT_CONTENT_0001: "<safe-output-tools>\nTools: post_review\n"
           GH_AW_PROMPT_CONTENT_0002: "</safe-output-tools>\n"
-          GH_AW_PROMPT_CONTENT_0003: "<github-context>\nThe following GitHub context information is available for this workflow:\n{{#if github.actor}}\n- **actor**: __GH_AW_GITHUB_ACTOR__\n{{/if}}\n{{#if github.repository}}\n- **repository**: __GH_AW_GITHUB_REPOSITORY__\n{{/if}}\n{{#if github.workspace}}\n- **workspace**: __GH_AW_GITHUB_WORKSPACE__\n{{/if}}\n{{#if github.event.issue.number || (github.aw.context.item_type == 'issue' && github.aw.context.item_number)}}\n- **issue-number**: #__GH_AW_EXPR_7C248226__\n{{/if}}\n{{#if github.event.discussion.number || (github.aw.context.item_type == 'discussion' && github.aw.context.item_number)}}\n- **discussion-number**: #__GH_AW_EXPR_C19C384F__\n{{/if}}\n{{#if github.event.pull_request.number || (github.aw.context.item_type == 'pull_request' && github.aw.context.item_number)}}\n- **pull-request-number**: #__GH_AW_EXPR_76DF9333__\n{{/if}}\n{{#if github.event.comment.id || github.aw.context.comment_id}}\n- **comment-id**: __GH_AW_EXPR_77C1A4D2__\n{{/if}}\n{{#if github.run_id}}\n- **workflow-run-id**: __GH_AW_GITHUB_RUN_ID__\n{{/if}}\n- **checkouts**: The following repositories have been checked out and are available in the workspace:\n  - repo `__GH_AW_GITHUB_REPOSITORY__` → `__GH_AW_GITHUB_WORKSPACE__` (cwd) [shallow clone, fetch-depth=1 (default)]\n  - **Note**: The workspace path reported above may contain a separate shallow, credential-free checkout of the host repository. Use the exact checkout path shown for the repository you need. Before concluding that a branch is unavailable, confirm your working directory matches that path and inspect refs there. If the branch is not present in that checkout and is not listed as an additional fetched ref, it has NOT been checked out. For private repositories you cannot fetch it. If the branch is required and not available, exit with an error and ask the user to add it to the `fetch:` option of the `checkout:` configuration (e.g., `fetch: [\"refs/pulls/open/*\"]` for all open PR refs, or `fetch: [\"main\", \"feature/my-branch\"]` for specific branches).\n  - **Warning: No git credentials are available to the agent.** Credentials are\n    intentionally removed after the checkout step for security. This means any git\n    operation that needs to authenticate to the remote will fail. In private repositories, that includes:\n    - `git fetch`, `git pull`, `git clone`, and `git push` (direct push, not via safe-output tools)\n    - Checking out or switching to a remote branch that is not already fetched\n    - Deepening a shallow clone (`git fetch --unshallow`)\n    - On-demand blob fetches in partial/blobless clones (operations on files not in the initial checkout)\n    Do NOT attempt to configure credentials, run `git credential fill`, or modify `.gitconfig` —\n    authentication will not succeed. If you encounter credential prompts or authentication errors,\n    stop immediately and report the limitation rather than spending turns trying to work around it.\n</github-context>\n\n"
+          GH_AW_PROMPT_CONTENT_0003: "<github-context>\nThe following GitHub context information is available for this workflow:\n{{#if github.actor}}\n- **actor**: __GH_AW_GITHUB_ACTOR__\n{{/if}}\n{{#if github.repository}}\n- **repository**: __GH_AW_GITHUB_REPOSITORY__\n{{/if}}\n{{#if github.workspace}}\n- **workspace**: __GH_AW_GITHUB_WORKSPACE__\n{{/if}}\n{{#if github.event.issue.number || (github.aw.context.item_type == 'issue' && github.aw.context.item_number)}}\n- **issue-number**: #__GH_AW_EXPR_7C248226__\n{{/if}}\n{{#if github.event.discussion.number || (github.aw.context.item_type == 'discussion' && github.aw.context.item_number)}}\n- **discussion-number**: #__GH_AW_EXPR_C19C384F__\n{{/if}}\n{{#if github.event.pull_request.number || (github.aw.context.item_type == 'pull_request' && github.aw.context.item_number)}}\n- **pull-request-number**: #__GH_AW_EXPR_76DF9333__\n{{/if}}\n{{#if github.event.comment.id || github.aw.context.comment_id}}\n- **comment-id**: __GH_AW_EXPR_77C1A4D2__\n{{/if}}\n{{#if github.run_id}}\n- **workflow-run-id**: __GH_AW_GITHUB_RUN_ID__\n{{/if}}\n- **checkouts**: The following repositories have been checked out and are available in the workspace:\n  - repo `__GH_AW_GITHUB_REPOSITORY__` → `__GH_AW_GITHUB_WORKSPACE__` (cwd) [full history, all branches available as remote-tracking refs]\n  - **Note**: The workspace path reported above may contain a separate shallow, credential-free checkout of the host repository. Use the exact checkout path shown for the repository you need. Before concluding that a branch is unavailable, confirm your working directory matches that path and inspect refs there. If the branch is not present in that checkout and is not listed as an additional fetched ref, it has NOT been checked out. For private repositories you cannot fetch it. If the branch is required and not available, exit with an error and ask the user to add it to the `fetch:` option of the `checkout:` configuration (e.g., `fetch: [\"refs/pulls/open/*\"]` for all open PR refs, or `fetch: [\"main\", \"feature/my-branch\"]` for specific branches).\n  - **Warning: No git credentials are available to the agent.** Credentials are\n    intentionally removed after the checkout step for security. This means any git\n    operation that needs to authenticate to the remote will fail. In private repositories, that includes:\n    - `git fetch`, `git pull`, `git clone`, and `git push` (direct push, not via safe-output tools)\n    - Checking out or switching to a remote branch that is not already fetched\n    - Deepening a shallow clone (`git fetch --unshallow`)\n    - On-demand blob fetches in partial/blobless clones (operations on files not in the initial checkout)\n    Do NOT attempt to configure credentials, run `git credential fill`, or modify `.gitconfig` —\n    authentication will not succeed. If you encounter credential prompts or authentication errors,\n    stop immediately and report the limitation rather than spending turns trying to work around it.\n</github-context>\n\n"
           GH_AW_PROMPT_CONTENT_0004: "</system>\n"
           GH_AW_PROMPT_CONTENT_0005: "{{#runtime-import .github/workflows/rook-review.md}}\n"
         with:
@@ -325,7 +346,7 @@ jobs:
           GH_AW_SUB_AGENT_EXT: ".md"
           GH_AW_SKILL_DIR: ".claude/skills"
           GH_AW_SKILL_EXT: ".md"
-          GH_AW_GITHUB_EVENT_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+          GH_AW_EXPR_AE61BB68: ${{ github.event.pull_request.number || github.event.issue.number }}
           GH_AW_GITHUB_REPOSITORY: ${{ github.repository }}
         with:
           script: |
@@ -342,14 +363,16 @@ jobs:
           GH_AW_EXPR_76DF9333: ${{ github.event.pull_request.number || (fromJSON(steps.generate_aw_info.outputs.aw_context || '{}').item_type == 'pull_request' && fromJSON(steps.generate_aw_info.outputs.aw_context || '{}').item_number) }}
           GH_AW_EXPR_77C1A4D2: ${{ github.event.comment.id || fromJSON(steps.generate_aw_info.outputs.aw_context || '{}').comment_id }}
           GH_AW_EXPR_7C248226: ${{ github.event.issue.number || (fromJSON(steps.generate_aw_info.outputs.aw_context || '{}').item_type == 'issue' && fromJSON(steps.generate_aw_info.outputs.aw_context || '{}').item_number) }}
+          GH_AW_EXPR_AE61BB68: ${{ github.event.pull_request.number || github.event.issue.number }}
           GH_AW_EXPR_C19C384F: ${{ github.event.discussion.number || (fromJSON(steps.generate_aw_info.outputs.aw_context || '{}').item_type == 'discussion' && fromJSON(steps.generate_aw_info.outputs.aw_context || '{}').item_number) }}
           GH_AW_GITHUB_ACTOR: ${{ github.actor }}
-          GH_AW_GITHUB_EVENT_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
           GH_AW_GITHUB_REPOSITORY: ${{ github.repository }}
           GH_AW_GITHUB_RUN_ID: ${{ github.run_id }}
           GH_AW_GITHUB_WORKSPACE: ${{ github.workspace }}
+          GH_AW_INCLUDE_PR_CONTEXT: ${{ (github.event_name == 'issue_comment' && github.event.issue.pull_request != null) || github.event_name == 'pull_request_review_comment' || github.event_name == 'pull_request_review' }}
           GH_AW_MCP_CLI_SERVERS_LIST: '- `safeoutputs` — run `safeoutputs --help` to see available tools'
           GH_AW_NEEDS_PRE_ACTIVATION_OUTPUTS_ACTIVATED: ${{ needs.pre_activation.outputs.activated }}
+          GH_AW_NEEDS_PRE_ACTIVATION_OUTPUTS_MATCHED_COMMAND: ${{ needs.pre_activation.outputs.matched_command }}
         with:
           script: |
             const path = require('path');
@@ -366,14 +389,16 @@ jobs:
                 GH_AW_EXPR_76DF9333: process.env.GH_AW_EXPR_76DF9333,
                 GH_AW_EXPR_77C1A4D2: process.env.GH_AW_EXPR_77C1A4D2,
                 GH_AW_EXPR_7C248226: process.env.GH_AW_EXPR_7C248226,
+                GH_AW_EXPR_AE61BB68: process.env.GH_AW_EXPR_AE61BB68,
                 GH_AW_EXPR_C19C384F: process.env.GH_AW_EXPR_C19C384F,
                 GH_AW_GITHUB_ACTOR: process.env.GH_AW_GITHUB_ACTOR,
-                GH_AW_GITHUB_EVENT_PULL_REQUEST_NUMBER: process.env.GH_AW_GITHUB_EVENT_PULL_REQUEST_NUMBER,
                 GH_AW_GITHUB_REPOSITORY: process.env.GH_AW_GITHUB_REPOSITORY,
                 GH_AW_GITHUB_RUN_ID: process.env.GH_AW_GITHUB_RUN_ID,
                 GH_AW_GITHUB_WORKSPACE: process.env.GH_AW_GITHUB_WORKSPACE,
+                GH_AW_INCLUDE_PR_CONTEXT: process.env.GH_AW_INCLUDE_PR_CONTEXT,
                 GH_AW_MCP_CLI_SERVERS_LIST: process.env.GH_AW_MCP_CLI_SERVERS_LIST,
-                GH_AW_NEEDS_PRE_ACTIVATION_OUTPUTS_ACTIVATED: process.env.GH_AW_NEEDS_PRE_ACTIVATION_OUTPUTS_ACTIVATED
+                GH_AW_NEEDS_PRE_ACTIVATION_OUTPUTS_ACTIVATED: process.env.GH_AW_NEEDS_PRE_ACTIVATION_OUTPUTS_ACTIVATED,
+                GH_AW_NEEDS_PRE_ACTIVATION_OUTPUTS_MATCHED_COMMAND: process.env.GH_AW_NEEDS_PRE_ACTIVATION_OUTPUTS_MATCHED_COMMAND
               }
             });
       - name: Validate prompt placeholders
@@ -518,7 +543,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          ref: "${{ github.event.pull_request.base.sha }}"
+          fetch-depth: 0
       - name: Initialize agent execution evidence
         run: |
           mkdir -p "/tmp/gh-aw"
@@ -555,14 +580,14 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: jhoblitt/rook-claude
-          ref: b9876c93b943ab32b3f5b86d3a4319264998bdf5
+          ref: 12fee62d531d9f59844312cfa1da3ab1663f99f5
           path: .gh-aw-plugins/plugin-0
           persist-credentials: false
       - name: Record agent plugin installation jhoblitt/rook-claude/plugins/rook-maintainer
         run: |
           test -d ./.gh-aw-plugins/plugin-0/plugins/rook-maintainer
           mkdir -p "/tmp/gh-aw"
-          jq -cn --arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg plugin jhoblitt/rook-claude/plugins/rook-maintainer@b9876c93b943ab32b3f5b86d3a4319264998bdf5 --arg repository jhoblitt/rook-claude --arg ref b9876c93b943ab32b3f5b86d3a4319264998bdf5 --arg path .gh-aw-plugins/plugin-0/plugins/rook-maintainer '{timestamp: $timestamp, plugin: $plugin, repository: $repository, ref: $ref, path: $path, status: "installed"}' >> /tmp/gh-aw/plugin-installations.jsonl
+          jq -cn --arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg plugin jhoblitt/rook-claude/plugins/rook-maintainer@12fee62d531d9f59844312cfa1da3ab1663f99f5 --arg repository jhoblitt/rook-claude --arg ref 12fee62d531d9f59844312cfa1da3ab1663f99f5 --arg path .gh-aw-plugins/plugin-0/plugins/rook-maintainer '{timestamp: $timestamp, plugin: $plugin, repository: $repository, ref: $ref, path: $path, status: "installed"}' >> /tmp/gh-aw/plugin-installations.jsonl
       - name: Determine automatic lockdown mode for GitHub MCP Server
         id: determine-automatic-lockdown
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
@@ -596,7 +621,7 @@ jobs:
         env:
           GH_AW_FILE_ROOT: "${{ runner.temp }}/gh-aw"
           GH_AW_FILE_CONFIG: "{\"files\":[{\"path\":\"safeoutputs/config.json\",\"content_env\":\"GH_AW_SAFE_OUTPUTS_CONFIG\"}]}"
-          GH_AW_SAFE_OUTPUTS_CONFIG: "{\"create_report_incomplete_issue\":{},\"noop\":{\"max\":2,\"report-as-issue\":\"false\"},\"post-review\":{\"description\":\"Post this run's review. Call exactly once. `body` is the review report. `comments` is a JSON array of every current inline finding, each {\\\"id\\\": \\\"B1\\\", \\\"path\\\": \\\"pkg/x.go\\\", \\\"line\\\": 12, \\\"body\\\": \\\"...\\\"}, anchored on a line this pull request changed. Findings an earlier run already posted are skipped automatically, so always pass all of them.\",\"inputs\":{\"body\":{\"default\":null,\"description\":\"The review report (markdown)\",\"required\":true,\"type\":\"string\"},\"comments\":{\"default\":null,\"description\":\"JSON array of inline findings: id, path, line, body\",\"required\":true,\"type\":\"string\"}}},\"report_incomplete\":{},\"report_missing_data\":{},\"report_missing_tool\":{},\"security-gate\":{\"description\":\"Report this review's security verdict. Call exactly once, after post_review: \\\"findings\\\" if the review reports any blocker or changes-requested security finding, otherwise \\\"clean\\\".\",\"inputs\":{\"verdict\":{\"default\":null,\"description\":\"clean or findings\",\"options\":[\"clean\",\"findings\"],\"required\":true,\"type\":\"choice\"}}}}"
+          GH_AW_SAFE_OUTPUTS_CONFIG: "{\"post-review\":{\"description\":\"Post this run's review. Call exactly once. `commit` is the full SHA of the pull request commit you reviewed. `body` is the review report. `comments` is a JSON array of every current inline finding, each {\\\"id\\\": \\\"B1\\\", \\\"path\\\": \\\"pkg/x.go\\\", \\\"line\\\": 12, \\\"body\\\": \\\"...\\\"}, anchored on a line this pull request changed. Findings an earlier run already posted are skipped automatically, so always pass all of them. `security` is \\\"findings\\\" if the review reports any blocker or changes-requested security finding, otherwise \\\"clean\\\".\",\"inputs\":{\"body\":{\"default\":null,\"description\":\"The review report (markdown)\",\"required\":true,\"type\":\"string\"},\"comments\":{\"default\":null,\"description\":\"JSON array of inline findings: id, path, line, body\",\"required\":true,\"type\":\"string\"},\"commit\":{\"default\":null,\"description\":\"Full SHA of the reviewed pull request commit\",\"required\":true,\"type\":\"string\"},\"security\":{\"default\":null,\"description\":\"clean or findings\",\"options\":[\"clean\",\"findings\"],\"required\":true,\"type\":\"choice\"}}}}"
         with:
           script: |
             const path = require('path');
@@ -613,7 +638,7 @@ jobs:
               "repo_params": {},
               "dynamic_tools": [
                 {
-                  "description": "Post this run's review. Call exactly once. `body` is the review report. `comments` is a JSON array of every current inline finding, each {\"id\": \"B1\", \"path\": \"pkg/x.go\", \"line\": 12, \"body\": \"...\"}, anchored on a line this pull request changed. Findings an earlier run already posted are skipped automatically, so always pass all of them.",
+                  "description": "Post this run's review. Call exactly once. `commit` is the full SHA of the pull request commit you reviewed. `body` is the review report. `comments` is a JSON array of every current inline finding, each {\"id\": \"B1\", \"path\": \"pkg/x.go\", \"line\": 12, \"body\": \"...\"}, anchored on a line this pull request changed. Findings an earlier run already posted are skipped automatically, so always pass all of them. `security` is \"findings\" if the review reports any blocker or changes-requested security finding, otherwise \"clean\".",
                   "inputSchema": {
                     "additionalProperties": false,
                     "properties": {
@@ -624,22 +649,12 @@ jobs:
                       "comments": {
                         "description": "JSON array of inline findings: id, path, line, body",
                         "type": "string"
-                      }
-                    },
-                    "required": [
-                      "body",
-                      "comments"
-                    ],
-                    "type": "object"
-                  },
-                  "name": "post_review"
-                },
-                {
-                  "description": "Report this review's security verdict. Call exactly once, after post_review: \"findings\" if the review reports any blocker or changes-requested security finding, otherwise \"clean\".",
-                  "inputSchema": {
-                    "additionalProperties": false,
-                    "properties": {
-                      "verdict": {
+                      },
+                      "commit": {
+                        "description": "Full SHA of the reviewed pull request commit",
+                        "type": "string"
+                      },
+                      "security": {
                         "description": "clean or findings",
                         "enum": [
                           "clean",
@@ -649,90 +664,19 @@ jobs:
                       }
                     },
                     "required": [
-                      "verdict"
+                      "body",
+                      "comments",
+                      "commit",
+                      "security"
                     ],
                     "type": "object"
                   },
-                  "name": "security_gate"
+                  "name": "post_review"
                 }
               ]
             }
           GH_AW_VALIDATION_JSON: |
-            {
-              "noop": {
-                "defaultMax": 2,
-                "fields": {
-                  "message": {
-                    "required": true,
-                    "type": "string",
-                    "sanitize": true,
-                    "maxLength": 65000
-                  }
-                }
-              },
-              "report_incomplete": {
-                "defaultMax": 5,
-                "fields": {
-                  "details": {
-                    "type": "string",
-                    "sanitize": true,
-                    "maxLength": 65000
-                  },
-                  "reason": {
-                    "required": true,
-                    "type": "string",
-                    "sanitize": true,
-                    "maxLength": 1024
-                  }
-                }
-              },
-              "report_missing_data": {
-                "defaultMax": 20,
-                "fields": {
-                  "alternatives": {
-                    "type": "string",
-                    "sanitize": true,
-                    "maxLength": 256
-                  },
-                  "context": {
-                    "type": "string",
-                    "sanitize": true,
-                    "maxLength": 256
-                  },
-                  "data_type": {
-                    "type": "string",
-                    "sanitize": true,
-                    "maxLength": 128
-                  },
-                  "reason": {
-                    "type": "string",
-                    "sanitize": true,
-                    "maxLength": 256
-                  }
-                }
-              },
-              "report_missing_tool": {
-                "defaultMax": 20,
-                "fields": {
-                  "alternatives": {
-                    "type": "string",
-                    "sanitize": true,
-                    "maxLength": 512
-                  },
-                  "reason": {
-                    "required": true,
-                    "type": "string",
-                    "sanitize": true,
-                    "maxLength": 256
-                  },
-                  "tool": {
-                    "type": "string",
-                    "sanitize": true,
-                    "maxLength": 128
-                  }
-                }
-              }
-            }
+            {}
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
@@ -1116,6 +1060,7 @@ jobs:
           GH_AW_ALLOWED_DOMAINS: "*.githubusercontent.com,api.snapcraft.io,archive.ubuntu.com,azure.archive.ubuntu.com,codeload.github.com,crl.geotrust.com,crl.globalsign.com,crl.identrust.com,crl.sectigo.com,crl.thawte.com,crl.usertrust.com,crl.verisign.com,crl3.digicert.com,crl4.digicert.com,crls.ssl.com,docs.github.com,github-cloud.githubusercontent.com,github-cloud.s3.amazonaws.com,github.blog,github.com,github.githubassets.com,go.dev,golang.org,goproxy.io,json-schema.org,json.schemastore.org,keyserver.ubuntu.com,lfs.github.com,objects.githubusercontent.com,ocsp.digicert.com,ocsp.geotrust.com,ocsp.globalsign.com,ocsp.identrust.com,ocsp.sectigo.com,ocsp.ssl.com,ocsp.thawte.com,ocsp.usertrust.com,ocsp.verisign.com,packagecloud.io,packages.cloud.google.com,packages.microsoft.com,patch-diff.githubusercontent.com,patchdiff.githubusercontent.com,pkg.go.dev,ppa.launchpad.net,proxy.golang.org,raw.githubusercontent.com,s.symcb.com,s.symcd.com,security.ubuntu.com,storage.googleapis.com,sum.golang.org,ts-crl.ws.symantec.com,ts-ocsp.ws.symantec.com,www.googleapis.com"
           GITHUB_SERVER_URL: ${{ github.server_url }}
           GITHUB_API_URL: ${{ github.api_url }}
+          GH_AW_COMMANDS: "[\"review\"]"
         with:
           script: |
             const path = require('path');
@@ -1270,9 +1215,7 @@ jobs:
       - agent
       - detection
       - post_review
-      - safe_outputs
-      - security-verdict
-      - security_gate
+      - review-error
     if: >
       always() && (needs.agent.result != 'skipped' || needs.activation.outputs.lockdown_check_failed == 'true' ||
       needs.activation.outputs.oauth_token_check_failed == 'true' || needs.activation.outputs.stale_lock_file_failed == 'true' ||
@@ -1282,24 +1225,15 @@ jobs:
     # Permissions for the conclusion job (workflow permissions default to none).
     permissions:
       actions: read
-      checks: read
-      issues: write
-      pull-requests: read
     concurrency:
       group: "gh-aw-conclusion-rook-review"
       cancel-in-progress: false
       queue: max
     env:
-      GH_AW_JOB_DISPLAY_NAMES: "{\"activation\":\"activation\",\"agent\":\"agent\",\"conclusion\":\"conclusion\",\"detection\":\"detection\",\"post_review\":\"post_review\",\"pre_activation\":\"pre_activation\",\"safe_outputs\":\"safe_outputs\",\"security-verdict\":\"security-verdict\",\"security_gate\":\"security_gate\"}"
-      GH_AW_JOB_RESULTS: "{\"activation\":{\"result\":\"${{ needs.activation.result }}\"},\"agent\":{\"result\":\"${{ needs.agent.result }}\"},\"detection\":{\"result\":\"${{ needs.detection.result }}\"},\"post_review\":{\"result\":\"${{ needs.post_review.result }}\"},\"safe_outputs\":{\"result\":\"${{ needs.safe_outputs.result }}\"},\"security-verdict\":{\"result\":\"${{ needs.security-verdict.result }}\"},\"security_gate\":{\"result\":\"${{ needs.security_gate.result }}\"}}"
-      GH_AW_JOB_TIMING_ELIGIBLE: "{\"activation\":true,\"agent\":true,\"conclusion\":true,\"detection\":true,\"post_review\":true,\"pre_activation\":true,\"safe_outputs\":true,\"security-verdict\":true,\"security_gate\":true}"
+      GH_AW_JOB_DISPLAY_NAMES: "{\"activation\":\"activation\",\"agent\":\"agent\",\"conclusion\":\"conclusion\",\"detection\":\"detection\",\"post_review\":\"post_review\",\"pre_activation\":\"pre_activation\",\"review-error\":\"review-error\"}"
+      GH_AW_JOB_RESULTS: "{\"activation\":{\"result\":\"${{ needs.activation.result }}\"},\"agent\":{\"result\":\"${{ needs.agent.result }}\"},\"detection\":{\"result\":\"${{ needs.detection.result }}\"},\"post_review\":{\"result\":\"${{ needs.post_review.result }}\"},\"review-error\":{\"result\":\"${{ needs.review-error.result }}\"}}"
+      GH_AW_JOB_TIMING_ELIGIBLE: "{\"activation\":true,\"agent\":true,\"conclusion\":true,\"detection\":true,\"post_review\":true,\"pre_activation\":true,\"review-error\":true}"
       GH_AW_RUNTIME_FEATURES: ${{ vars.GH_AW_RUNTIME_FEATURES }}
-    outputs:
-      incomplete_count: ${{ steps.report_incomplete.outputs.incomplete_count }}
-      noop_comment_body: ${{ steps.noop.outputs.noop_comment_body }}
-      noop_message: ${{ steps.noop.outputs.noop_message }}
-      tools_reported: ${{ steps.missing_tool.outputs.tools_reported }}
-      total_count: ${{ steps.missing_tool.outputs.total_count }}
     steps:
       - name: Setup Scripts
         id: setup
@@ -1351,32 +1285,6 @@ jobs:
           pattern: safe-outputs-items
           merge-multiple: true
           path: /tmp/gh-aw/
-      - name: Process no-op messages
-        id: noop
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        env:
-          GH_AW_AGENT_OUTPUT: ${{ steps.setup-agent-output-env.outputs.GH_AW_AGENT_OUTPUT }}
-          GH_AW_NOOP_MAX: "2"
-          GH_AW_WORKFLOW_NAME: "rook code review"
-          GH_AW_WORKFLOW_SOURCE_URL: "${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.github/workflows/rook-review.md"
-          GH_AW_ENGINE_ID: "claude"
-          GH_AW_ENGINE_MODEL: "copilot/claude-opus-5.5"
-          GH_AW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          GH_AW_AGENT_CONCLUSION: ${{ needs.agent.result }}
-          GH_AW_NOOP_REPORT_AS_ISSUE: "false"
-          GH_AW_AIC: ${{ needs.agent.outputs.aic }}
-          GH_AW_THREAT_DETECTION_AIC: ${{ needs.detection.outputs.aic }}
-          GH_AW_AMBIENT_CONTEXT: ${{ needs.agent.outputs.ambient_context }}
-          GH_AW_WORKFLOW_ID: "rook-review"
-        with:
-          github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
-          script: |
-            const path = require('path');
-            const actionsDir = path.join(process.env.RUNNER_TEMP, 'gh-aw', 'actions');
-            const { setupGlobals } = require(path.join(actionsDir, 'setup_globals.cjs'));
-            setupGlobals(core, github, context, exec, io, getOctokit);
-            const { main } = require(path.join(actionsDir, 'handle_noop_message.cjs'));
-            await main();
       - name: Log detection run
         id: detection_runs
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
@@ -1395,44 +1303,6 @@ jobs:
             const { setupGlobals } = require(path.join(actionsDir, 'setup_globals.cjs'));
             setupGlobals(core, github, context, exec, io, getOctokit);
             const { main } = require(path.join(actionsDir, 'handle_detection_runs.cjs'));
-            await main();
-      - name: Record missing tool
-        id: missing_tool
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        env:
-          GH_AW_AGENT_OUTPUT: ${{ steps.setup-agent-output-env.outputs.GH_AW_AGENT_OUTPUT }}
-          GH_AW_MISSING_TOOL_CREATE_ISSUE: "true"
-          GH_AW_WORKFLOW_NAME: "rook code review"
-          GH_AW_WORKFLOW_SOURCE_URL: "${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.github/workflows/rook-review.md"
-          GH_AW_ENGINE_ID: "claude"
-          GH_AW_ENGINE_MODEL: "copilot/claude-opus-5.5"
-        with:
-          github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
-          script: |
-            const path = require('path');
-            const actionsDir = path.join(process.env.RUNNER_TEMP, 'gh-aw', 'actions');
-            const { setupGlobals } = require(path.join(actionsDir, 'setup_globals.cjs'));
-            setupGlobals(core, github, context, exec, io, getOctokit);
-            const { main } = require(path.join(actionsDir, 'missing_tool.cjs'));
-            await main();
-      - name: Record incomplete
-        id: report_incomplete
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        env:
-          GH_AW_AGENT_OUTPUT: ${{ steps.setup-agent-output-env.outputs.GH_AW_AGENT_OUTPUT }}
-          GH_AW_REPORT_INCOMPLETE_CREATE_ISSUE: "true"
-          GH_AW_WORKFLOW_NAME: "rook code review"
-          GH_AW_WORKFLOW_SOURCE_URL: "${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.github/workflows/rook-review.md"
-          GH_AW_ENGINE_ID: "claude"
-          GH_AW_ENGINE_MODEL: "copilot/claude-opus-5.5"
-        with:
-          github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
-          script: |
-            const path = require('path');
-            const actionsDir = path.join(process.env.RUNNER_TEMP, 'gh-aw', 'actions');
-            const { setupGlobals } = require(path.join(actionsDir, 'setup_globals.cjs'));
-            setupGlobals(core, github, context, exec, io, getOctokit);
-            const { main } = require(path.join(actionsDir, 'report_incomplete_handler.cjs'));
             await main();
       - name: Handle agent failure
         id: handle_agent_failure
@@ -1454,7 +1324,7 @@ jobs:
           GH_AW_THREAT_DETECTION_AIC: ${{ needs.detection.outputs.aic }}
           GH_AW_DETECTION_JOB_RESULT: ${{ needs.detection.result }}
           GH_AW_MAX_AI_CREDITS: ${{ vars.GH_AW_DEFAULT_MAX_AI_CREDITS || '1000' }}
-          GH_AW_DEFAULT_CHECKOUT_USES_TRIGGER_REF: "false"
+          GH_AW_DEFAULT_CHECKOUT_USES_TRIGGER_REF: "true"
           GH_AW_INFERENCE_ACCESS_ERROR: ${{ needs.agent.outputs.inference_access_error }}
           GH_AW_MCP_POLICY_ERROR: ${{ needs.agent.outputs.mcp_policy_error }}
           GH_AW_AGENTIC_ENGINE_TIMEOUT: ${{ needs.agent.outputs.agentic_engine_timeout }}
@@ -1477,7 +1347,7 @@ jobs:
           GH_AW_DAILY_AI_CREDITS_THRESHOLD: ${{ needs.activation.outputs.daily_ai_credits_threshold }}
           GH_AW_DAILY_AI_CREDITS_CONTINUE_ON_ERROR: "false"
           GH_AW_GROUP_REPORTS: "false"
-          GH_AW_FAILURE_REPORT_AS_ISSUE: "true"
+          GH_AW_FAILURE_REPORT_AS_ISSUE: "false"
           GH_AW_MISSING_TOOL_REPORT_AS_FAILURE: "true"
           GH_AW_MISSING_DATA_REPORT_AS_FAILURE: "true"
           GH_AW_TIMEOUT_MINUTES: "45"
@@ -1489,25 +1359,6 @@ jobs:
             const { setupGlobals } = require(path.join(actionsDir, 'setup_globals.cjs'));
             setupGlobals(core, github, context, exec, io, getOctokit);
             const { main } = require(path.join(actionsDir, 'handle_agent_failure.cjs'));
-            await main();
-      - name: Report failed jobs
-        id: report_failed_jobs
-        if: always()
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        env:
-          GH_AW_AGENT_OUTPUT: ${{ steps.setup-agent-output-env.outputs.GH_AW_AGENT_OUTPUT }}
-          GH_AW_WORKFLOW_NAME: "rook code review"
-          GH_AW_WORKFLOW_SOURCE_URL: "${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.github/workflows/rook-review.md"
-          GH_AW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          GH_AW_REPORT_FAILED_JOBS: "true"
-        with:
-          github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
-          script: |
-            const path = require('path');
-            const actionsDir = path.join(process.env.RUNNER_TEMP, 'gh-aw', 'actions');
-            const { setupGlobals } = require(path.join(actionsDir, 'setup_globals.cjs'));
-            setupGlobals(core, github, context, exec, io, getOctokit);
-            const { main } = require(path.join(actionsDir, 'report_failed_jobs.cjs'));
             await main();
       - name: Collect usage artifact files
         if: always()
@@ -1524,9 +1375,8 @@ jobs:
         env:
           GH_AW_GRADER_MANIFEST_0: '{"version":2,"graders":[]}'
           GH_AW_GRADER_MANIFEST_CHUNKS: '1'
-          GH_AW_SAFE_JOB_NAMES: "[\"post_review\",\"security_gate\"]"
-          GH_AW_SAFE_JOB_RESULTS: "{\"post_review\":{\"result\":${{ toJSON(needs.post_review.result) }},\"outputs\":{}},\"security_gate\":{\"result\":${{ toJSON(needs.security_gate.result) }},\"outputs\":{}}}"
-          GH_AW_JOB_DURATIONS: ${{ steps.report_failed_jobs.outputs.job_durations }}
+          GH_AW_SAFE_JOB_NAMES: "[\"post_review\"]"
+          GH_AW_SAFE_JOB_RESULTS: "{\"post_review\":{\"result\":${{ toJSON(needs.post_review.result) }},\"outputs\":{}}}"
           GH_AW_DAILY_AI_CREDITS_GUARDRAIL_STATUS: ${{ needs.activation.outputs.daily_ai_credits_guardrail_status }}
           GH_AW_DAILY_AI_CREDITS_EXCEEDED: ${{ needs.activation.outputs.daily_ai_credits_exceeded }}
           GH_AW_DAILY_AI_CREDITS_TOTAL: ${{ needs.activation.outputs.daily_ai_credits_total }}
@@ -1723,7 +1573,7 @@ jobs:
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
           WORKFLOW_NAME: "rook code review"
-          WORKFLOW_DESCRIPTION: "Spike - run the rook-maintainer rook-code-review skill on pull requests"
+          WORKFLOW_DESCRIPTION: "Run the rook-maintainer rook-code-review skill on pull requests"
           HAS_PATCH: ${{ needs.agent.outputs.has_patch }}
           GH_AW_DETECTION_CONTINUE_ON_ERROR: "true"
           GH_AW_DETECTION_SKIP_PROMPT_SUMMARY: "true"
@@ -1793,7 +1643,7 @@ jobs:
           RUNNER_TEMP: ${{ runner.temp }}
           TRACEPARENT: ${{ env.GITHUB_AW_OTEL_TRACE_ID != '' && env.GITHUB_AW_OTEL_PARENT_SPAN_ID != '' && format('00-{0}-{1}-01', env.GITHUB_AW_OTEL_TRACE_ID, env.GITHUB_AW_OTEL_PARENT_SPAN_ID) || '' }}
           WORKFLOW_NAME: "rook code review"
-          WORKFLOW_DESCRIPTION: "Spike - run the rook-maintainer rook-code-review skill on pull requests"
+          WORKFLOW_DESCRIPTION: "Run the rook-maintainer rook-code-review skill on pull requests"
           HAS_PATCH: ${{ needs.agent.outputs.has_patch }}
           GH_AW_DETECTION_CONTINUE_ON_ERROR: "true"
         run: |
@@ -1971,15 +1821,17 @@ jobs:
     if: >
       (!cancelled()) && needs.agent.result != 'skipped' && contains(needs.agent.outputs.output_types, 'post_review') &&
       needs.detection.result == 'success'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     # Permissions for the post_review job (workflow permissions default to none).
     permissions:
       pull-requests: write
+      statuses: write
     env:
       GH_AW_AGENT_AIC: ${{ needs.agent.outputs.aic }}
       GH_AW_AIC: ${{ needs.agent.outputs.aic }}
       GH_AW_AMBIENT_CONTEXT: ${{ needs.agent.outputs.ambient_context }}
       GH_AW_CALLER_WORKFLOW_ID: "${{ github.repository }}/rook-review"
+      GH_AW_COMMANDS: "[\"review\"]"
       GH_AW_DETECTION_CONCLUSION: ${{ needs.detection.outputs.detection_conclusion }}
       GH_AW_DETECTION_REASON: ${{ needs.detection.outputs.detection_reason }}
       GH_AW_ENGINE_ID: "claude"
@@ -2008,7 +1860,7 @@ jobs:
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
-      - name: Post the review with only new inline findings
+      - name: Post the review and its security status
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
           GH_AW_AGENT_OUTPUT: ${{ runner.temp }}/gh-aw/safe-jobs/agent_output.json
@@ -2037,6 +1889,28 @@ jobs:
               return;
             }
             const review = calls[0];
+
+            // A /review comment's event carries the issue, not the pull request.
+            const { owner, repo } = context.repo;
+            const number = context.payload.pull_request?.number ?? context.payload.issue?.number;
+            const { data: pr } = await github.rest.pulls.get({ owner, repo, pull_number: number });
+
+            // The review and its status belong to the commit the agent read, which a
+            // push during the run may have replaced as the head.
+            const commit = String(review.commit || "").trim().toLowerCase();
+            if (!/^[0-9a-f]{40}$/.test(commit)) {
+              core.setFailed(`post_review commit is not a full SHA: ${JSON.stringify(review.commit)}`);
+              return;
+            }
+            if (commit !== pr.head.sha) {
+              const commits = await github.paginate(github.rest.pulls.listCommits,
+                { owner, repo, pull_number: number, per_page: 100 });
+              if (!commits.some(c => c.sha === commit)) {
+                core.setFailed(`${commit} is not a commit of pull request #${number}`);
+                return;
+              }
+            }
+
             let comments = review.comments;
             if (typeof comments === "string") {
               try { comments = JSON.parse(comments); } catch { comments = []; }
@@ -2046,46 +1920,65 @@ jobs:
               && typeof c.path === "string" && Number.isInteger(c.line) && c.line > 0
               && typeof c.body === "string");
 
-            // Finding IDs are permanent per target, so an ID already on the PR is an
-            // already-posted finding. Older comments predate the marker and are
-            // recognized by their leading **<ID>/ label.
-            const { owner, repo } = context.repo;
-            const pr = context.payload.pull_request;
+            // Finding IDs are permanent per target, so an ID already posted on the
+            // same path is an already-posted finding. Only the trailer this job
+            // appends counts, not a marker quoted inside a finding's text.
             const existing = await github.paginate(github.rest.pulls.listReviewComments,
-              { owner, repo, pull_number: pr.number, per_page: 100 });
+              { owner, repo, pull_number: number, per_page: 100 });
             const seen = new Set();
             for (const c of existing) {
               if (c.user?.login !== "github-actions[bot]") continue;
-              for (const m of c.body.matchAll(/<!-- rook-review-finding:([A-Z][0-9]+) -->/g)) seen.add(m[1]);
-              const lead = c.body.match(/^\*\*([A-Z][0-9]+)\//);
-              if (lead) seen.add(lead[1]);
+              const m = c.body.match(/\n\n<!-- rook-review-finding:([BCNQ][0-9]+) -->$/);
+              if (m) seen.add(`${m[1]} ${c.path}`);
             }
-            const fresh = valid.filter(c => !seen.has(c.id));
-            core.info(`valid inline findings: ${valid.length}; already posted: ${[...seen].join(",") || "none"}; new: ${fresh.length}`);
+            const fresh = valid.filter(c => !seen.has(`${c.id} ${c.path}`));
+            core.info(`valid inline findings: ${valid.length}; already posted: ${valid.length - fresh.length}; new: ${fresh.length}`);
+
+            // Every finding carries its <ID>/<domain> label, so an open security
+            // finding is visible here even when it was posted by an earlier run.
+            // The scan reads the decoded strings: in serialized JSON a label that
+            // starts a line follows a literal "\n" and has no word boundary.
+            const texts = [];
+            const walk = v => typeof v === "string" ? texts.push(v)
+              : v && typeof v === "object" && Object.values(v).forEach(walk);
+            walk(output.items);
+            walk(comments);
+            const labels = [...new Set(texts.join("\n").match(/\b[BC][0-9]+\/security\b/g) || [])];
+            const insecure = review.security === "findings" || labels.length > 0;
+            core.info(`security: ${review.security}; labels: ${labels.join(",") || "none"}`);
 
             // The marker is added after sanitizing, which strips HTML comments; its
             // content is an ID already validated above.
             const runUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
-            const body = `${sanitizeContent(String(review.body))}\n\n> Generated by [rook code review](${runUrl})`;
+            const moved = commit === pr.head.sha ? ""
+              : `> This review is of ${commit}; the pull request has since moved to ${pr.head.sha}.\n\n`;
+            const body = `${moved}${sanitizeContent(String(review.body))}\n\n> Generated by [rook code review](${runUrl})`;
             const inline = fresh.map(c => ({ path: c.path, line: c.line, side: "RIGHT",
               body: `${sanitizeContent(c.body)}\n\n<!-- rook-review-finding:${c.id} -->` }));
-            const base = { owner, repo, pull_number: pr.number, commit_id: pr.head.sha, event: "COMMENT" };
+            const base = { owner, repo, pull_number: number, commit_id: commit, event: "COMMENT" };
             try {
               await github.rest.pulls.createReview({ ...base, body, comments: inline });
             } catch (e) {
-              core.warning(`GitHub rejected an inline anchor (${e.status}); posting the findings in the body instead`);
+              if (e.status !== 422) throw e;
+              core.warning("GitHub rejected an inline anchor; posting the findings in the body instead");
               await github.rest.pulls.createReview({ ...base, body: body + inline.map(c => `\n\n---\n\n${c.body}`).join("") });
             }
 
+            await github.rest.repos.createCommitStatus({ owner, repo, sha: commit,
+              context: "rook-review/security", target_url: runUrl,
+              state: insecure ? "failure" : "success",
+              description: insecure ? `security findings: ${labels.join(", ") || "see the review"}`.slice(0, 140)
+                : "no security findings" });
+
   pre_activation:
     name: pre_activation
-    if: github.event.pull_request.head.repo.full_name == 'batmanuel-sandbox/rook2'
+    if: "(github.event_name != 'issue_comment' || contains(fromJSON('[\"OWNER\",\"MEMBER\",\"COLLABORATOR\"]'), github.event.comment.author_association)) && ((github.event_name == 'issue_comment') && (github.event_name == 'issue_comment' && (startsWith(github.event.comment.body, '/review ') || startsWith(github.event.comment.body, '/review\n') || startsWith(github.event.comment.body, '/review\r') || github.event.comment.body == '/review') && github.event.issue.pull_request != null) || !(github.event_name == 'issue_comment'))"
     runs-on: ubuntu-slim
     env:
       GH_AW_RUNTIME_FEATURES: ${{ vars.GH_AW_RUNTIME_FEATURES }}
     outputs:
-      activated: ${{ steps.check_membership.outputs.is_team_member == 'true' }}
-      matched_command: ''
+      activated: ${{ steps.check_membership.outputs.is_team_member == 'true' && steps.check_command_position.outputs.command_position_ok == 'true' }}
+      matched_command: ${{ steps.check_command_position.outputs.matched_command }}
       setup-parent-span-id: ${{ steps.setup.outputs.parent-span-id || steps.setup.outputs.span-id }}
       setup-span-id: ${{ steps.setup.outputs.span-id }}
       setup-trace-id: ${{ steps.setup.outputs.trace-id }}
@@ -2102,8 +1995,22 @@ jobs:
           GH_AW_INFO_VERSION: "2.1.310"
           GH_AW_INFO_AWF_VERSION: "v0.29.0"
           GH_AW_INFO_ENGINE_ID: "claude"
-      - name: Check team membership for workflow
+      - name: Check command position
+        id: check_command_position
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          GH_AW_COMMANDS: "[\"review\"]"
+        with:
+          script: |
+            const path = require('path');
+            const actionsDir = path.join(process.env.RUNNER_TEMP, 'gh-aw', 'actions');
+            const { setupGlobals } = require(path.join(actionsDir, 'setup_globals.cjs'));
+            setupGlobals(core, github, context, exec, io, getOctokit);
+            const { main } = require(path.join(actionsDir, 'check_command_position.cjs'));
+            await main();
+      - name: Check team membership for command workflow
         id: check_membership
+        if: steps.check_command_position.outputs.command_position_ok == 'true'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
           GH_AW_REQUIRED_ROLES: "admin,maintainer,write"
@@ -2117,82 +2024,18 @@ jobs:
             const { main } = require(path.join(actionsDir, 'check_membership.cjs'));
             await main();
 
-  safe_outputs:
-    name: safe_outputs
+  review-error:
+    name: review-error
     needs:
-      - activation
-      - agent
       - detection
-    if: (!cancelled()) && needs.agent.result != 'skipped' && needs.detection.result == 'success'
-    runs-on: ubuntu-slim
-    # Permissions for the safe_outputs job (workflow permissions default to none).
+      - post_review
+    if: ${{ !cancelled() && needs.detection.result != 'skipped' && needs.post_review.result != 'success' }}
+    runs-on: ubuntu-22.04
+    # Permissions for the review-error job (workflow permissions default to none).
     permissions:
-      issues: write
-    timeout-minutes: 15
-    env:
-      GH_AW_AGENT_AIC: ${{ needs.agent.outputs.aic }}
-      GH_AW_AIC: ${{ needs.agent.outputs.aic }}
-      GH_AW_AMBIENT_CONTEXT: ${{ needs.agent.outputs.ambient_context }}
-      GH_AW_CALLER_WORKFLOW_ID: "${{ github.repository }}/rook-review"
-      GH_AW_DETECTION_CONCLUSION: ${{ needs.detection.outputs.detection_conclusion }}
-      GH_AW_DETECTION_REASON: ${{ needs.detection.outputs.detection_reason }}
-      GH_AW_ENGINE_ID: "claude"
-      GH_AW_ENGINE_MODEL: "copilot/claude-opus-5.5"
-      GH_AW_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-      GH_AW_RUNTIME_FEATURES: ${{ vars.GH_AW_RUNTIME_FEATURES }}
-      GH_AW_RUN_DETECTION: ${{ needs.detection.outputs.run_detection }}
-      GH_AW_THREAT_DETECTION_AIC: ${{ needs.detection.outputs.aic }}
-      GH_AW_WORKFLOW_ID: "rook-review"
-      GH_AW_WORKFLOW_NAME: "rook code review"
-      GH_AW_WORKFLOW_SOURCE_URL: "${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.github/workflows/rook-review.md"
-    outputs:
-      code_push_failure_count: ${{ steps.process_safe_outputs.outputs.code_push_failure_count }}
-      code_push_failure_errors: ${{ steps.process_safe_outputs.outputs.code_push_failure_errors }}
-      create_discussion_error_count: ${{ steps.process_safe_outputs.outputs.create_discussion_error_count }}
-      create_discussion_errors: ${{ steps.process_safe_outputs.outputs.create_discussion_errors }}
-      process_safe_outputs_items_applied: ${{ steps.process_safe_outputs.outputs.items_applied }}
-      process_safe_outputs_items_cancelled: ${{ steps.process_safe_outputs.outputs.items_cancelled }}
-      process_safe_outputs_items_deferred: ${{ steps.process_safe_outputs.outputs.items_deferred }}
-      process_safe_outputs_items_failed: ${{ steps.process_safe_outputs.outputs.items_failed }}
-      process_safe_outputs_items_skipped: ${{ steps.process_safe_outputs.outputs.items_skipped }}
-      process_safe_outputs_items_succeeded: ${{ steps.process_safe_outputs.outputs.items_succeeded }}
-      process_safe_outputs_items_warnings: ${{ steps.process_safe_outputs.outputs.items_warnings }}
-      process_safe_outputs_processed_count: ${{ steps.process_safe_outputs.outputs.processed_count }}
-      process_safe_outputs_status: ${{ steps.process_safe_outputs.outputs.status }}
+      pull-requests: read
+      statuses: write
     steps:
-      - name: Setup Scripts
-        id: setup
-        uses: github/gh-aw-actions/setup@221ba4f4319de6b8e809d1a15528b3ae6a818aa5 # v1.0.1
-        with:
-          destination: ${{ runner.temp }}/gh-aw/actions
-          job-name: ${{ github.job }}
-          trace-id: ${{ needs.activation.outputs.setup-trace-id }}
-          parent-span-id: ${{ needs.activation.outputs.setup-parent-span-id || needs.activation.outputs.setup-span-id }}
-        env:
-          GH_AW_SETUP_WORKFLOW_NAME: "rook code review"
-          GH_AW_CURRENT_WORKFLOW_REF: ${{ github.repository }}/.github/workflows/rook-review.lock.yml@${{ github.ref }}
-          GH_AW_INFO_VERSION: "2.1.310"
-          GH_AW_INFO_AWF_VERSION: "v0.29.0"
-          GH_AW_INFO_ENGINE_ID: "claude"
-      - name: Mask OTLP telemetry headers
-        run: bash "${RUNNER_TEMP}/gh-aw/actions/mask_otlp_headers.sh"
-      - name: Download agent output artifact
-        id: download-agent-output
-        continue-on-error: true
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-        with:
-          pattern: "{agent,agent-output-fallback}"
-          merge-multiple: true
-          path: /tmp/gh-aw/
-      - name: Setup agent output environment variable
-        id: setup-agent-output-env
-        if: steps.download-agent-output.outcome == 'success'
-        run: |
-          mkdir -p /tmp/gh-aw/
-          find "/tmp/gh-aw/" -type f -print
-          if [ -f "/tmp/gh-aw/agent_output.json" ]; then
-            echo "GH_AW_AGENT_OUTPUT=/tmp/gh-aw/agent_output.json" >> "$GITHUB_OUTPUT"
-          fi
       - name: Configure GH_HOST for enterprise compatibility
         id: ghes-host-config
         shell: bash
@@ -2202,141 +2045,19 @@ jobs:
           GH_HOST="${GITHUB_SERVER_URL#https://}"
           GH_HOST="${GH_HOST#http://}"
           echo "GH_HOST=${GH_HOST}" >> "$GITHUB_ENV"
-      - name: Process Safe Outputs
-        id: process_safe_outputs
+      - name: Mark the pull request head as not reviewed
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
-          GH_AW_JOB_CHECK_RUN_ID: ${{ job.check_run_id }}
-          GH_AW_AGENT_OUTPUT: ${{ steps.setup-agent-output-env.outputs.GH_AW_AGENT_OUTPUT }}
-          GH_AW_COMMENT_ID: ${{ needs.activation.outputs.comment_id }}
-          GH_AW_MENTIONS_GITHUB_TOKEN: ${{ github.token }}
-          GH_AW_ALLOWED_DOMAINS: "*.githubusercontent.com,api.snapcraft.io,archive.ubuntu.com,azure.archive.ubuntu.com,codeload.github.com,crl.geotrust.com,crl.globalsign.com,crl.identrust.com,crl.sectigo.com,crl.thawte.com,crl.usertrust.com,crl.verisign.com,crl3.digicert.com,crl4.digicert.com,crls.ssl.com,docs.github.com,github-cloud.githubusercontent.com,github-cloud.s3.amazonaws.com,github.blog,github.com,github.githubassets.com,go.dev,golang.org,goproxy.io,json-schema.org,json.schemastore.org,keyserver.ubuntu.com,lfs.github.com,objects.githubusercontent.com,ocsp.digicert.com,ocsp.geotrust.com,ocsp.globalsign.com,ocsp.identrust.com,ocsp.sectigo.com,ocsp.ssl.com,ocsp.thawte.com,ocsp.usertrust.com,ocsp.verisign.com,packagecloud.io,packages.cloud.google.com,packages.microsoft.com,patch-diff.githubusercontent.com,patchdiff.githubusercontent.com,pkg.go.dev,ppa.launchpad.net,proxy.golang.org,raw.githubusercontent.com,s.symcb.com,s.symcd.com,security.ubuntu.com,storage.googleapis.com,sum.golang.org,ts-crl.ws.symantec.com,ts-ocsp.ws.symantec.com,www.googleapis.com"
-          GITHUB_SERVER_URL: ${{ github.server_url }}
-          GITHUB_API_URL: ${{ github.api_url }}
-          GH_AW_SAFE_OUTPUT_JOBS: "{\"post_review\":\"\",\"security_gate\":\"\"}"
-          GH_AW_SAFE_OUTPUTS_HANDLER_CONFIG: "{\"create_report_incomplete_issue\":{},\"noop\":{\"max\":2,\"report-as-issue\":\"false\"},\"report_incomplete\":{},\"report_missing_data\":{},\"report_missing_tool\":{}}"
-          GH_AW_GITHUB_TOKEN_SOURCE: ${{ secrets.GH_AW_GITHUB_TOKEN != '' && 'pat' || 'github_actions' }}
-        with:
-          github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
-          script: |
-            const path = require('path');
-            const actionsDir = path.join(process.env.RUNNER_TEMP, 'gh-aw', 'actions');
-            const { setupGlobals } = require(path.join(actionsDir, 'setup_globals.cjs'));
-            setupGlobals(core, github, context, exec, io, getOctokit, process.env.GH_AW_GITHUB_TOKEN_SOURCE);
-            const { main } = require(path.join(actionsDir, 'process_safe_outputs.cjs'));
-            await main();
-      - name: Upload Safe Outputs Items
-        if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: safe-outputs-items
-          path: |
-            /tmp/gh-aw/safe-output-items.jsonl
-            /tmp/gh-aw/safe-output-outcomes.jsonl
-            /tmp/gh-aw/temporary-id-map.json
-            /tmp/gh-aw/safe-output-errors.json
-          if-no-files-found: ignore
-          retention-days: ${{ vars.GH_AW_DEFAULT_ARTIFACT_RETENTION_DAYS || '0' }}
-
-  security-verdict:
-    name: security-verdict
-    needs:
-      - detection
-      - post_review
-      - security_gate
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Configure GH_HOST for enterprise compatibility
-        id: ghes-host-config
-        shell: bash
-        run: | # zizmor: ignore[github-env] - GITHUB_SERVER_URL is set by GitHub Actions, not user input.
-          # Derive GH_HOST from GITHUB_SERVER_URL so the gh CLI targets the correct
-          # GitHub instance (GHES/GHEC). On github.com this is a harmless no-op.
-          GH_HOST="${GITHUB_SERVER_URL#https://}"
-          GH_HOST="${GH_HOST#http://}"
-          echo "GH_HOST=${GH_HOST}" >> "$GITHUB_ENV"
-      - name: Require an approved, posted, clean security verdict
-        run: |
-          echo "detection=${DETECTION} post_review=${POSTED} security_gate=${GATE}"
-          # post_review and security_gate check the detection conclusion
-          # themselves; a status-only job may read results but not outputs.
-          if [[ "${DETECTION}" != success ]]; then
-            echo "::error::threat detection job ${DETECTION}"
-            exit 1
-          fi
-          if [[ "${POSTED}" != success ]]; then
-            echo "::error::the review was not posted (${POSTED})"
-            exit 1
-          fi
-          if [[ "${GATE}" != success ]]; then
-            echo "::error::security gate ${GATE}: security findings, or no verdict reported"
-            exit 1
-          fi
-        env:
-          DETECTION: ${{ needs.detection.result }}
-          GATE: ${{ needs.security_gate.result }}
           POSTED: ${{ needs.post_review.result }}
-
-  security_gate:
-    name: security_gate
-    needs:
-      - agent
-      - detection
-      - post_review
-    if: >
-      (!cancelled()) && needs.agent.result != 'skipped' && contains(needs.agent.outputs.output_types, 'security_gate') &&
-      needs.detection.result == 'success'
-    runs-on: ubuntu-latest
-    env:
-      GH_AW_AGENT_AIC: ${{ needs.agent.outputs.aic }}
-      GH_AW_AIC: ${{ needs.agent.outputs.aic }}
-      GH_AW_AMBIENT_CONTEXT: ${{ needs.agent.outputs.ambient_context }}
-      GH_AW_CALLER_WORKFLOW_ID: "${{ github.repository }}/rook-review"
-      GH_AW_DETECTION_CONCLUSION: ${{ needs.detection.outputs.detection_conclusion }}
-      GH_AW_DETECTION_REASON: ${{ needs.detection.outputs.detection_reason }}
-      GH_AW_ENGINE_ID: "claude"
-      GH_AW_ENGINE_MODEL: "copilot/claude-opus-5.5"
-      GH_AW_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-      GH_AW_RUN_DETECTION: ${{ needs.detection.outputs.run_detection }}
-      GH_AW_THREAT_DETECTION_AIC: ${{ needs.detection.outputs.aic }}
-      GH_AW_WORKFLOW_ID: "rook-review"
-      GH_AW_WORKFLOW_NAME: "rook code review"
-      GH_AW_WORKFLOW_SOURCE_URL: "${{ github.server_url }}/${{ github.repository }}/blob/${{ github.ref_name }}/.github/workflows/rook-review.md"
-    steps:
-      - name: Download agent output artifact
-        continue-on-error: true
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
-          pattern: "{agent,agent-output-fallback}"
-          merge-multiple: true
-          path: ${{ runner.temp }}/gh-aw/safe-jobs/
-      - name: Fail on security findings
-        run: |
-          set -euo pipefail
-          # The detection job reports success even when it blocks the output
-          # (it runs continue-on-error); only its conclusion says it approved.
-          if [[ "${GH_AW_DETECTION_CONCLUSION:-}" != success ]]; then
-            echo "::error::threat detection did not approve the review output (conclusion: ${GH_AW_DETECTION_CONCLUSION:-none})"
-            exit 1
-          fi
-          out="${GH_AW_AGENT_OUTPUT:?no agent output}"
-          verdicts=$(jq -r '[.items[] | select(.type == "security_gate") | .verdict] | join(",")' "$out")
-          # Scans every finding this run reported, including ones post-review
-          # did not repost: an open security finding keeps the check red.
-          labels=$(jq -r '.items[] | .. | strings' "$out" \
-            | grep -oE '\b[BC][0-9]+/security\b' | sort -u | paste -sd, - || true)
-          echo "verdicts=[${verdicts}] security-labels=[${labels}]" | tee -a "$GITHUB_STEP_SUMMARY"
-          if [[ -z "$verdicts" ]]; then
-            echo "::error::the review did not report a security verdict"
-            exit 1
-          fi
-          if [[ "$verdicts" == *findings* || -n "$labels" ]]; then
-            echo "::error::security findings reported: ${labels:-see the review}"
-            exit 1
-          fi
-          echo "no security findings"
-        env:
-          GH_AW_AGENT_OUTPUT: ${{ runner.temp }}/gh-aw/safe-jobs/agent_output.json
-          GH_AW_DETECTION_CONCLUSION: ${{ needs.detection.outputs.detection_conclusion }}
-          GH_AW_JOB_CHECK_RUN_ID: ${{ job.check_run_id }}
+          script: |
+            const { owner, repo } = context.repo;
+            let sha = context.payload.pull_request?.head?.sha;
+            if (!sha) {
+              const { data: pr } = await github.rest.pulls.get({ owner, repo, pull_number: context.payload.issue.number });
+              sha = pr.head.sha;
+            }
+            await github.rest.repos.createCommitStatus({ owner, repo, sha,
+              context: "rook-review/security",
+              target_url: `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`,
+              state: "error", description: `the review did not post (post_review: ${process.env.POSTED})` });
