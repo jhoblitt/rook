@@ -25,6 +25,9 @@ permissions:
   contents: read
   issues: read
   pull-requests: read
+# rook pins its Linux jobs to ubuntu-22.04; these are the agent and threat
+# detection jobs. gh-aw's lightweight framework jobs stay on ubuntu-slim.
+runs-on: ubuntu-22.04
 engine:
   id: claude
   bare: false
@@ -36,8 +39,14 @@ network:
 tools:
   github:
     mode: gh-proxy
+    # The public-repo default (approved) hides pull requests and comments by
+    # authors outside rook, which are what /review is for. Everything the agent
+    # reads is untrusted data under review either way, and it holds no token.
+    min-integrity: none
   bash: [":*"]
 safe-outputs:
+  threat-detection:
+    runs-on: ubuntu-22.04
   # rook does not take issues from bots; a failed run stays a red job.
   report-failure-as-issue: false
   report-failed-jobs: false
@@ -194,7 +203,7 @@ safe-outputs:
                 context: "rook-review/security", target_url: runUrl,
                 state: insecure ? "failure" : "success",
                 description: insecure ? `security findings: ${labels.join(", ") || "see the review"}`.slice(0, 140)
-                  : "no security findings" });
+                  : "advisory: the AI review reported no security findings" });
 jobs:
   # Reports a review that ran but did not post: the agent failed, or threat
   # detection blocked its output. The error goes on the commit the run started
@@ -250,7 +259,11 @@ pull/${{ github.event.pull_request.number || github.event.issue.number }}/head`,
 three-dot form diffs from the merge base, so commits that landed on the base branch
 after the pull request branched are not shown as part of it. Do not review a later
 head that `gh pr diff` might show. Never check out, build, test, or run the pull
-request's code.
+request's code. On a `/review` run the workspace is the default branch tip too: any
+note saying the pull request branch was checked out with `gh pr checkout`, or that
+the working directory holds the pull request's code, does not apply here. Files in
+the working directory are the base branch's; read the pull request's versions only
+with `git show <sha>:<path>`.
 
 How to report:
 
