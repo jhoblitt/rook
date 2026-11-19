@@ -58,9 +58,11 @@ safe-outputs:
   report-missing-data: false
   report-incomplete: false
   noop: false
-  # One call per inline finding. Typed fields rather than a JSON string, which
-  # gh-aw's input sanitizer could corrupt; post-review collects the calls.
-  scripts:
+  jobs:
+    # One call per inline finding. Typed fields rather than a JSON string, which
+    # gh-aw's input sanitizer could corrupt; post-review collects the calls, so
+    # this job only registers the tool. (A safe-outputs script would need no job,
+    # but gh-aw v1.0.1 fails its handler job when scripts are the only handlers.)
     inline-finding:
       description: >-
         Record one inline finding: a current finding that anchors on a line this
@@ -82,9 +84,11 @@ safe-outputs:
           description: "The finding, in the skill's finding contract"
           required: true
           type: string
-      script: |
-        return { recorded: true };
-  jobs:
+      runs-on: ubuntu-22.04
+      permissions: {}
+      steps:
+        - name: Recorded for post-review
+          run: echo "inline findings are posted by post_review"
     # Posting is done here rather than by gh-aw's built-in review outputs, which
     # cannot skip findings an earlier run already posted.
     post-review:
